@@ -4,17 +4,14 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
-const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
-const isPlaceholder = !apiKey || apiKey === 'your-api-key';
-
 const firebaseConfig = {
-  apiKey: isPlaceholder ? "AIzaSyDummyKeyForInitialization12345678" : apiKey,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "demo-project.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "demo-project",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "demo-project.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789:web:abcdef",
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCZYZeOF8oS9K-8hRqMsSrvBaCK9es6uWA",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "data-1-d387e.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "data-1-d387e",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "data-1-d387e.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "54009693633",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:54009693633:web:ea3626c01cc38d086c5b40",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-694ER56E89"
 };
 
 export const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];

@@ -1,77 +1,81 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Global Deny
-    match /{document=**} {
-      allow read, write: if false;
+    function isSignedIn() {
+      return request.auth != null;
     }
 
-    // Helper functions
-    function isSignedIn() { return request.auth != null; }
-    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/members/$(request.auth.uid)) && get(/databases/$(database)/documents/members/$(request.auth.uid)).data.role == 'admin'; }
-    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
-    function incoming() { return request.resource.data; }
-    function existing() { return resource.data; }
-    
-    // 1. Members
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/members/$(request.auth.uid))
+        && get(/databases/$(database)/documents/members/$(request.auth.uid)).data.role == "admin"
+        && get(/databases/$(database)/documents/members/$(request.auth.uid)).data.status == "approved";
+    }
+
+    // Public readable, Admin writable
+    match /siteSettings/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /programs/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /projects/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /events/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /cabinet/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /stories/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /gallery/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /news/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /faqs/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /awarenessContent/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public writable (for submissions by authenticated users), Admin readable
+    match /volunteers/{document=**} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if isAdmin();
+    }
+    match /newsletterSubscribers/{document=**} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if isAdmin();
+    }
+    match /donations/{document=**} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Members profiles
     match /members/{userId} {
-      // Public can read basic profile info of approved members? No, let's keep members private, only admins or themselves can see full data.
-      // But public might need to see some data? The prompt says: "Public users may read approved public content. Users may only view and edit their own private profile."
-      allow get: if isOwner(userId) || isAdmin();
-      allow list: if isAdmin();
-      
-      // Allow user to create their own profile during registration
-      allow create: if isOwner(userId) 
-        && incoming().role == 'member' 
-        && incoming().status == 'pending';
-        
-      // Allow updates: user can update their own profile (but not role/status), admins can update everything
-      allow update: if isAdmin() || (isOwner(userId) && incoming().role == existing().role && incoming().status == existing().status);
-      
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow delete: if isAdmin();
-    }
-
-    // 2. Public Content Collections (News, Events, Projects, Cabinet, AwarenessContent)
-    match /news/{docId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    match /events/{docId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    match /projects/{docId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    match /cabinet/{docId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    match /awarenessContent/{docId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // 3. Blood Bank
-    match /bloodBank/{docId} {
-      allow read: if true; // Public can see donors
-      allow write: if isAdmin(); // Currently admins add donors, or members can add themselves
-      allow create: if isSignedIn(); // Logged in users can register as donors
-    }
-
-    // 4. Donations
-    match /donations/{docId} {
-      allow read: if isAdmin(); // Only admins can see all donations
-      allow create: if true; // Anyone can submit a donation receipt
-      allow update, delete: if isAdmin();
-    }
-
-    // 5. Site Settings
-    match /siteSettings/{docId} {
-      allow read: if true;
-      allow write: if isAdmin();
     }
   }
 }

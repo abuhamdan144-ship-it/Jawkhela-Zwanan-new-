@@ -1,16 +1,67 @@
-import React, { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, Settings, LogOut, Menu, Bell, Search, User } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { auth, db } from '../lib/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        navigate('/admin/login');
+        return;
+      }
+
+      try {
+        const memberDoc = await getDoc(doc(db, 'members', user.uid));
+        if (memberDoc.exists() && memberDoc.data().role === 'admin' && memberDoc.data().status === 'approved') {
+          setIsAdmin(true);
+        } else {
+          await signOut(auth);
+          navigate('/admin/login');
+        }
+      } catch (err) {
+        console.error(err);
+        await signOut(auth);
+        navigate('/admin/login');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate('/admin/login');
+  };
+
+  if (loading) {
+    return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-blue-500">Loading...</div>;
+  }
+
+  if (!isAdmin) return null;
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Users', path: '/dashboard/users', icon: Users },
-    { name: 'Settings', path: '/dashboard/settings', icon: Settings },
+    { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
+    { name: 'Programs', path: '/admin/programs', icon: LayoutDashboard },
+    { name: 'Projects', path: '/admin/projects', icon: LayoutDashboard },
+    { name: 'Events', path: '/admin/events', icon: LayoutDashboard },
+    { name: 'Team', path: '/admin/cabinet', icon: Users },
+    { name: 'Stories', path: '/admin/stories', icon: LayoutDashboard },
+    { name: 'Gallery', path: '/admin/gallery', icon: LayoutDashboard },
+    { name: 'Volunteers', path: '/admin/volunteers', icon: Users },
+    { name: 'Newsletters', path: '/admin/newsletters', icon: Users },
+    { name: 'Global Settings', path: '/admin/settings', icon: Settings },
   ];
 
   return (
@@ -32,7 +83,7 @@ export function AdminLayout() {
       >
         <div className="h-16 flex items-center px-6 border-b border-slate-800">
           <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-            AdminPanel
+            Zwanan Admin
           </span>
         </div>
 
@@ -41,7 +92,7 @@ export function AdminLayout() {
             <NavLink
               key={item.name}
               to={item.path}
-              end={item.path === '/dashboard'}
+              end={item.path === '/admin'}
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) => cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
@@ -57,10 +108,19 @@ export function AdminLayout() {
         </div>
 
         <div className="p-4 border-t border-slate-800">
-          <button className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+          <button onClick={handleLogout} className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors">
             <LogOut className="w-5 h-5" />
             Logout
           </button>
+          
+          <div className="mt-4 text-center">
+            <a href="#" onClick={() => {
+              window.location.hash = '';
+              window.location.reload();
+            }} className="text-xs text-slate-500 hover:text-slate-400">
+              &larr; View Public Site
+            </a>
+          </div>
         </div>
       </aside>
 
@@ -75,25 +135,9 @@ export function AdminLayout() {
             >
               <Menu className="w-6 h-6" />
             </button>
-            
-            {/* Search */}
-            <div className="hidden sm:flex relative max-w-md w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                className="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
-              />
-            </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="relative text-slate-400 hover:text-slate-50 transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute 0 right-0 w-2 h-2 bg-blue-500 rounded-full border border-slate-900"></span>
-            </button>
-            
-            {/* Profile Dropdown */}
             <div className="relative">
               <button 
                 onClick={() => setProfileOpen(!profileOpen)}
@@ -109,12 +153,9 @@ export function AdminLayout() {
                   <div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)} />
                   <div className="absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-800 rounded-lg shadow-xl z-50 py-1">
                     <div className="px-4 py-2 border-b border-slate-800">
-                      <p className="text-sm font-medium text-slate-50">Admin User</p>
-                      <p className="text-xs text-slate-400">admin@example.com</p>
+                      <p className="text-sm font-medium text-slate-50">{auth.currentUser?.email}</p>
                     </div>
-                    <a href="#profile" className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-slate-50">Your Profile</a>
-                    <a href="#settings" className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-slate-50">Settings</a>
-                    <button className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10">Sign out</button>
+                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10">Sign out</button>
                   </div>
                 </>
               )}

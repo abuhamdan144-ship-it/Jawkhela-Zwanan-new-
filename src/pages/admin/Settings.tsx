@@ -1,34 +1,78 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import { Save } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
 
 export function Settings() {
-  return (
-    <div className="space-y-6 max-w-4xl">
-      <h1 className="text-2xl font-bold">Settings</h1>
-      
-      <div className="bg-slate-900 border border-slate-800 rounded-xl divide-y divide-slate-800">
-        <div className="p-6">
-          <h2 className="text-lg font-medium mb-4">Profile Information</h2>
-          <div className="space-y-4 max-w-md">
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Name</label>
-              <input type="text" defaultValue="Admin User" className="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Email</label>
-              <input type="email" defaultValue="admin@example.com" className="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
-            </div>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-              Save Changes
-            </button>
-          </div>
-        </div>
+  const [json, setJson] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
-        <div className="p-6">
-          <h2 className="text-lg font-medium mb-4 text-red-400">Danger Zone</h2>
-          <p className="text-sm text-slate-400 mb-4">Once you delete your account, there is no going back. Please be certain.</p>
-          <button className="bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            Delete Account
-          </button>
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const snap = await getDoc(doc(db, 'siteSettings', 'public'));
+        if (snap.exists()) {
+          setJson(JSON.stringify(snap.data(), null, 2));
+        } else {
+          setJson(JSON.stringify({
+            title: "Zwanan Jawkhela",
+            heroLead: "Zwanan Jawkhela is the youth community platform of Jawkhela village.",
+            aboutText: "We are building a better future."
+          }, null, 2));
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadSettings();
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError('');
+    setSuccess(false);
+    try {
+      const data = JSON.parse(json);
+      await setDoc(doc(db, 'siteSettings', 'public'), data);
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className="text-slate-400">Loading settings...</div>;
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-50">Global Site Settings</h1>
+        <p className="text-slate-400 text-sm">Manage global settings like the site title and hero text.</p>
+      </div>
+
+      {error && <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-4 rounded-lg">{error}</div>}
+      {success && <div className="bg-emerald-500/10 border border-emerald-500/50 text-emerald-500 p-4 rounded-lg">Settings saved successfully.</div>}
+
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+        <label className="block text-sm font-medium text-slate-300">Settings JSON</label>
+        <textarea
+          value={json}
+          onChange={(e) => setJson(e.target.value)}
+          className="w-full h-96 bg-slate-950 border border-slate-800 rounded-lg p-4 text-slate-300 font-mono text-sm focus:outline-none focus:border-blue-500"
+          spellCheck={false}
+        />
+        
+        <div className="flex justify-end">
+          <Button onClick={handleSave} disabled={saving}>
+            <Save className="w-4 h-4 mr-2" /> {saving ? 'Saving...' : 'Save Settings'}
+          </Button>
         </div>
       </div>
     </div>

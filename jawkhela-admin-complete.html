@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zwanan Jawkhela - Admin Dashboard</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a2a4a;
+            --secondary: #d4af37;
+            --accent: #2c3e50;
+            --text-light: #ecf0f1;
+            --text-dark: #2c3e50;
+            --border: #34495e;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, #0f1923 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--primary);
+            border-right: 2px solid var(--secondary);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .logo-section {
+            padding: 24px 20px;
+            border-bottom: 2px solid var(--secondary);
+            text-align: center;
+        }
+
+        .logo-section h1 {
+            color: var(--secondary);
+            font-size: 24px;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .logo-section p {
+            font-size: 12px;
+            color: #95a5a6;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 20px 0;
+            list-style: none;
+        }
+
+        .nav-item {
+            margin: 0;
+            border: none;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            color: #bdc3c7;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--secondary);
+            border-left-color: var(--secondary);
+        }
+
+        .nav-link.active {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--secondary);
+            border-left-color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 2px solid var(--secondary);
+            margin-top: auto;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header h2 {
+            color: var(--secondary);
+            font-size: 28px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: var(--text-dark);
+        }
+
+        .btn-primary:hover {
+            background: #e6c547;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+            color: var(--text-light);
+        }
+
+        .btn-secondary:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: rgba(44, 62, 80, 0.3);
+            color: var(--text-light);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: rgba(44, 62, 80, 0.5);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--primary);
+            padding: 30px;
+            border-radius: 8px;
+            border: 2px solid var(--secondary);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 15px;
+        }
+
+        .modal-header h3 {
+            color: var(--secondary);
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            font-size: 28px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #e6c547;
+            transform: rotate(90deg);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: rgba(44, 62, 80, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        table thead {
+            background: rgba(212, 175, 55, 0.1);
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        table th {
+            padding: 15px;
+            color: var(--secondary);
+            font-weight: 700;
+            text-align: left;
+            letter-spacing: 0.5px;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        table tbody tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, #0f1923 100%);
+        }
+
+        .login-box {
+            background: var(--primary);
+            border: 2px solid var(--secondary);
+            border-radius: 12px;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-box h1 {
+            color: var(--secondary);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        .login-box .form-group {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+            border-left-color: #27ae60;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border-left-color: #e74c3c;
+        }
+
+        .alert-info {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            border-left-color: #3498db;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #95a5a6;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--secondary);
+        }
+
+        .spinner {
+            border: 3px solid rgba(212, 175, 55, 0.2);
+            border-top: 3px solid var(--secondary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--secondary);
+            margin-bottom: 20px;
+            gap: 0;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: #95a5a6;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab:hover {
+            color: var(--secondary);
+        }
+
+        .tab.active {
+            color: var(--secondary);
+            border-bottom-color: var(--secondary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                margin-left: -280px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header h2 {
+                font-size: 22px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table th, table td {
+                padding: 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-sm {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h1>🕌 Zwanan Jawkhela</h1>
+            <div id="loginAlert"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Admin Email</label>
+                    <input type="email" id="adminEmail" placeholder="admin@jawkhela.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPassword" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardScreen" style="display: none;">
+        <div class="container">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="logo-section">
+                    <h1>🕌</h1>
+                    <h1>Zwanan Jawkhela</h1>
+                    <p>Admin Panel</p>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a class="nav-link active" onclick="switchSection('dashboard')">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="switchSection('members')">
+                            <span class="nav-icon">👥</span>
+                            Members
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="switchSection('cabinet')">
+                            <span class="nav-icon">🎩</span>
+                            Cabinet
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="switchSection('news')">
+                            <span class="nav-icon">📰</span>
+                            News
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="switchSection('events')">
+                            <span class="nav-icon">📅</span>
+                            Events
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="switchSection('announcements')">
+                            <span class="nav-icon">📣</span>
+                            Announcements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="switchSection('donations')">
+                            <span class="nav-icon">💝</span>
+                            Donations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="switchSection('settings')">
+                            <span class="nav-icon">⚙️</span>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+                <div class="sidebar-footer">
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="content-section active">
+                    <div class="header">
+                        <h2>Dashboard</h2>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Members</div>
+                            <div class="stat-number" id="statMembers">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Cabinet Members</div>
+                            <div class="stat-number" id="statCabinet">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">News Posts</div>
+                            <div class="stat-number" id="statNews">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Events</div>
+                            <div class="stat-number" id="statEvents">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Donations</div>
+                            <div class="stat-number" id="statDonations">OMR 0</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Members Section -->
+                <section id="members" class="content-section">
+                    <div class="header">
+                        <h2>Members Management</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openAddMemberModal()">+ Add Member</button>
+                            <button class="btn btn-secondary" onclick="exportToCSV('members')">📥 Export CSV</button>
+                        </div>
+                    </div>
+                    <div id="membersTable"></div>
+                </section>
+
+                <!-- Cabinet Section -->
+                <section id="cabinet" class="content-section">
+                    <div class="header">
+                        <h2>Cabinet Members</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openAddCabinetModal()">+ Add Member</button>
+                            <button class="btn btn-secondary" onclick="exportToCSV('cabinet')">📥 Export CSV</button>
+                        </div>
+                    </div>
+                    <div id="cabinetTable"></div>
+                </section>
+
+                <!-- News Section -->
+                <section id="news" class="content-section">
+                    <div class="header">
+                        <h2>News Management</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openAddNewsModal()">+ Add News</button>
+                            <button class="btn btn-secondary" onclick="exportToCSV('news')">📥 Export CSV</button>
+                        </div>
+                    </div>
+                    <div id="newsTable"></div>
+                </section>
+
+                <!-- Events Section -->
+                <section id="events" class="content-section">
+                    <div class="header">
+                        <h2>Events Management</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openAddEventModal()">+ Add Event</button>
+                            <button class="btn btn-secondary" onclick="exportToCSV('events')">📥 Export CSV</button>
+                        </div>
+                    </div>
+                    <div id="eventsTable"></div>
+                </section>
+
+                <!-- Announcements Section -->
+                <section id="announcements" class="content-section">
+                    <div class="header">
+                        <h2>Announcements</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openAddAnnouncementModal()">+ Add Announcement</button>
+                            <button class="btn btn-secondary" onclick="exportToCSV('announcements')">📥 Export CSV</button>
+                        </div>
+                    </div>
+                    <div id="announcementsTable"></div>
+                </section>
+
+                <!-- Donations Section -->
+                <section id="donations" class="content-section">
+                    <div class="header">
+                        <h2>Donations</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openAddDonationModal()">+ Add Donation</button>
+                            <button class="btn btn-secondary" onclick="exportToCSV('donations')">📥 Export CSV</button>
+                        </div>
+                    </div>
+                    <div id="donationsTable"></div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="content-section">
+                    <div class="header">
+                        <h2>Settings</h2>
+                    </div>
+                    <div style="background: rgba(44, 62, 80, 0.2); border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+                        <h3 style="color: var(--secondary); margin-bottom: 20px;">Admin Information</h3>
+                        <div class="form-group">
+                            <label>Current User Email</label>
+                            <input type="text" id="currentEmail" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Firebase Project</label>
+                            <input type="text" value="data-1-d387e" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Database</label>
+                            <input type="text" value="Firestore" readonly>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="memberModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="memberModalTitle">Add Member</h3>
+                <button class="close-btn" onclick="closeMemberModal()">×</button>
+            </div>
+            <form id="memberForm" onsubmit="saveMember(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="memberName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="memberEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="memberPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>Blood Group</label>
+                    <select id="memberBlood" required>
+                        <option value="">Select Blood Group</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Family Head</label>
+                    <input type="text" id="memberFamilyHead">
+                </div>
+                <button type="submit" class="btn btn-success">Save Member</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="cabinetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="cabinetModalTitle">Add Cabinet Member</h3>
+                <button class="close-btn" onclick="closeCabinetModal()">×</button>
+            </div>
+            <form id="cabinetForm" onsubmit="saveCabinet(event)">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="cabinetName" required>
+                </div>
+                <div class="form-group">
+                    <label>Position</label>
+                    <input type="text" id="cabinetPosition" placeholder="e.g., Chairman, Secretary" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="cabinetPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>Photo URL</label>
+                    <input type="url" id="cabinetPhoto" placeholder="https://...">
+                </div>
+                <button type="submit" class="btn btn-success">Save Cabinet Member</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="newsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="newsModalTitle">Add News</h3>
+                <button class="close-btn" onclick="closeNewsModal()">×</button>
+            </div>
+            <form id="newsForm" onsubmit="saveNews(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="newsTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="newsCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Death">Death (وفیات)</option>
+                        <option value="Marriage">Marriage (شادی)</option>
+                        <option value="Engagement">Engagement (منگنی)</option>
+                        <option value="General">General News</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea id="newsContent" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Author</label>
+                    <input type="text" id="newsAuthor">
+                </div>
+                <button type="submit" class="btn btn-success">Save News</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="eventModalTitle">Add Event</h3>
+                <button class="close-btn" onclick="closeEventModal()">×</button>
+            </div>
+            <form id="eventForm" onsubmit="saveEvent(event)">
+                <div class="form-group">
+                    <label>Event Name</label>
+                    <input type="text" id="eventName" required>
+                </div>
+                <div class="form-group">
+                    <label>Date & Time</label>
+                    <input type="datetime-local" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="eventLocation" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="eventDescription" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Save Event</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="announcementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="announcementModalTitle">Add Announcement</h3>
+                <button class="close-btn" onclick="closeAnnouncementModal()">×</button>
+            </div>
+            <form id="announcementForm" onsubmit="saveAnnouncement(event)">
+                <div class="form-group">
+                    <label>Announcement Text</label>
+                    <textarea id="announcementText" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="announcementPriority" required>
+                        <option value="normal">Normal</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Save Announcement</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="donationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="donationModalTitle">Add Donation</h3>
+                <button class="close-btn" onclick="closeDonationModal()">×</button>
+            </div>
+            <form id="donationForm" onsubmit="saveDonation(event)">
+                <div class="form-group">
+                    <label>Donor Name</label>
+                    <input type="text" id="donorName" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount (OMR)</label>
+                    <input type="number" id="donationAmount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Purpose</label>
+                    <input type="text" id="donationPurpose" placeholder="e.g., Welfare Fund">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="donationDate" required>
+                </div>
+                <button type="submit" class="btn btn-success">Save Donation</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDP0qqDtzCHfp-G2DzMaT8VvEr2xSZpjUo",
+            authDomain: "data-1-d387e.firebaseapp.com",
+            projectId: "data-1-d387e",
+            storageBucket: "data-1-d387e.appspot.com",
+            messagingSenderId: "803618540976",
+            appId: "1:803618540976:web:e4b1e1e2c8c7d5a6b9c0d1"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // State
+        let currentUser = null;
+        let currentEditId = null;
+        let adminCredentials = {
+            email: "admin@jawkhela.com",
+            password: "Jawkhela2024"
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('adminUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+                loadAllData();
+            }
+            
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        });
+
+        // Authentication
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const alertDiv = document.getElementById('loginAlert');
+
+            if (email === adminCredentials.email && password === adminCredentials.password) {
+                currentUser = { email };
+                localStorage.setItem('adminUser', JSON.stringify(currentUser));
+                document.getElementById('currentEmail').value = email;
+                showDashboard();
+                loadAllData();
+            } else {
+                alertDiv.innerHTML = '<div class="alert alert-error">❌ Invalid email or password</div>';
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                localStorage.removeItem('adminUser');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('dashboardScreen').style.display = 'none';
+                document.getElementById('loginForm').reset();
+                document.getElementById('loginAlert').innerHTML = '';
+            }
+        }
+
+        // UI Functions
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'block';
+            document.getElementById('currentEmail').value = currentUser.email;
+        }
+
+        function switchSection(section) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            event.target.closest('.nav-link').classList.add('active');
+
+            loadSectionData(section);
+        }
+
+        // Load Data
+        async function loadAllData() {
+            try {
+                const members = await db.collection('members').get();
+                const cabinet = await db.collection('cabinet').get();
+                const news = await db.collection('news').get();
+                const events = await db.collection('events').get();
+                const donations = await db.collection('donations').get();
+
+                document.getElementById('statMembers').textContent = members.size;
+                document.getElementById('statCabinet').textContent = cabinet.size;
+                document.getElementById('statNews').textContent = news.size;
+                document.getElementById('statEvents').textContent = events.size;
+
+                let totalDonations = 0;
+                donations.forEach(doc => {
+                    totalDonations += doc.data().amount || 0;
+                });
+                document.getElementById('statDonations').textContent = 'OMR ' + totalDonations.toFixed(2);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        async function loadSectionData(section) {
+            switch(section) {
+                case 'members':
+                    await loadMembers();
+                    break;
+                case 'cabinet':
+                    await loadCabinet();
+                    break;
+                case 'news':
+                    await loadNews();
+                    break;
+                case 'events':
+                    await loadEvents();
+                    break;
+                case 'announcements':
+                    await loadAnnouncements();
+                    break;
+                case 'donations':
+                    await loadDonations();
+                    break;
+            }
+        }
+
+        async function loadMembers() {
+            const container = document.getElementById('membersTable');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+            try {
+                const snapshot = await db.collection('members').orderBy('name').get();
+                let html = '';
+
+                if (snapshot.empty) {
+                    html = '<div class="empty-state"><div class="empty-state-icon">👥</div><p>No members yet</p></div>';
+                } else {
+                    html = '<div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Blood</th><th>Family Head</th><th>Actions</th></tr></thead><tbody>';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        html += `<tr>
+                            <td>${data.name}</td>
+                            <td>${data.email}</td>
+                            <td>${data.phone}</td>
+                            <td>${data.blood || '-'}</td>
+                            <td>${data.familyHead || '-'}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-secondary" onclick="editMember('${doc.id}')">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteMember('${doc.id}')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                }
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = '<div class="alert alert-error">Error loading members</div>';
+            }
+        }
+
+        async function loadCabinet() {
+            const container = document.getElementById('cabinetTable');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+            try {
+                const snapshot = await db.collection('cabinet').orderBy('position').get();
+                let html = '';
+
+                if (snapshot.empty) {
+                    html = '<div class="empty-state"><div class="empty-state-icon">🎩</div><p>No cabinet members yet</p></div>';
+                } else {
+                    html = '<div class="table-container"><table><thead><tr><th>Name</th><th>Position</th><th>Phone</th><th>Photo</th><th>Actions</th></tr></thead><tbody>';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        html += `<tr>
+                            <td>${data.name}</td>
+                            <td>${data.position}</td>
+                            <td>${data.phone}</td>
+                            <td>${data.photo ? '<a href="' + data.photo + '" target="_blank">View</a>' : '-'}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-secondary" onclick="editCabinet('${doc.id}')">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteCabinet('${doc.id}')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                }
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = '<div class="alert alert-error">Error loading cabinet members</div>';
+            }
+        }
+
+        async function loadNews() {
+            const container = document.getElementById('newsTable');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+            try {
+                const snapshot = await db.collection('news').orderBy('createdAt', 'desc').get();
+                let html = '';
+
+                if (snapshot.empty) {
+                    html = '<div class="empty-state"><div class="empty-state-icon">📰</div><p>No news posts yet</p></div>';
+                } else {
+                    html = '<div class="table-container"><table><thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Content Preview</th><th>Actions</th></tr></thead><tbody>';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const preview = data.content.substring(0, 50) + '...';
+                        html += `<tr>
+                            <td>${data.title}</td>
+                            <td>${data.category}</td>
+                            <td>${data.author || '-'}</td>
+                            <td>${preview}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-secondary" onclick="editNews('${doc.id}')">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteNews('${doc.id}')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                }
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = '<div class="alert alert-error">Error loading news</div>';
+            }
+        }
+
+        async function loadEvents() {
+            const container = document.getElementById('eventsTable');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+            try {
+                const snapshot = await db.collection('events').orderBy('date').get();
+                let html = '';
+
+                if (snapshot.empty) {
+                    html = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>No events yet</p></div>';
+                } else {
+                    html = '<div class="table-container"><table><thead><tr><th>Event Name</th><th>Date</th><th>Location</th><th>Actions</th></tr></thead><tbody>';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        html += `<tr>
+                            <td>${data.name}</td>
+                            <td>${new Date(data.date).toLocaleDateString()}</td>
+                            <td>${data.location}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-secondary" onclick="editEvent('${doc.id}')">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteEvent('${doc.id}')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                }
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = '<div class="alert alert-error">Error loading events</div>';
+            }
+        }
+
+        async function loadAnnouncements() {
+            const container = document.getElementById('announcementsTable');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+            try {
+                const snapshot = await db.collection('announcements').orderBy('createdAt', 'desc').get();
+                let html = '';
+
+                if (snapshot.empty) {
+                    html = '<div class="empty-state"><div class="empty-state-icon">📣</div><p>No announcements yet</p></div>';
+                } else {
+                    html = '<div class="table-container"><table><thead><tr><th>Text</th><th>Priority</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const preview = data.text.substring(0, 50) + '...';
+                        html += `<tr>
+                            <td>${preview}</td>
+                            <td><span style="background: ${data.priority === 'urgent' ? '#e74c3c' : data.priority === 'high' ? '#f39c12' : '#27ae60'}; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${data.priority}</span></td>
+                            <td>${new Date(data.createdAt).toLocaleDateString()}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-secondary" onclick="editAnnouncement('${doc.id}')">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteAnnouncement('${doc.id}')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                }
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = '<div class="alert alert-error">Error loading announcements</div>';
+            }
+        }
+
+        async function loadDonations() {
+            const container = document.getElementById('donationsTable');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+            try {
+                const snapshot = await db.collection('donations').orderBy('date', 'desc').get();
+                let html = '';
+
+                if (snapshot.empty) {
+                    html = '<div class="empty-state"><div class="empty-state-icon">💝</div><p>No donations yet</p></div>';
+                } else {
+                    html = '<div class="table-container"><table><thead><tr><th>Donor</th><th>Amount</th><th>Purpose</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        html += `<tr>
+                            <td>${data.donor}</td>
+                            <td>OMR ${data.amount.toFixed(2)}</td>
+                            <td>${data.purpose}</td>
+                            <td>${new Date(data.date).toLocaleDateString()}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-secondary" onclick="editDonation('${doc.id}')">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteDonation('${doc.id}')">Delete</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                }
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = '<div class="alert alert-error">Error loading donations</div>';
+            }
+        }
+
+        // Member Functions
+        function openAddMemberModal() {
+            currentEditId = null;
+            document.getElementById('memberModalTitle').textContent = 'Add Member';
+            document.getElementById('memberForm').reset();
+            document.getElementById('memberModal').classList.add('active');
+        }
+
+        function closeMemberModal() {
+            document.getElementById('memberModal').classList.remove('active');
+        }
+
+        async function saveMember(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('memberName').value,
+                email: document.getElementById('memberEmail').value,
+                phone: document.getElementById('memberPhone').value,
+                blood: document.getElementById('memberBlood').value,
+                familyHead: document.getElementById('memberFamilyHead').value
+            };
+
+            try {
+                if (currentEditId) {
+                    await db.collection('members').doc(currentEditId).update(data);
+                    alert('Member updated successfully!');
+                } else {
+                    await db.collection('members').add(data);
+                    alert('Member added successfully!');
+                }
+                closeMemberModal();
+                loadMembers();
+                loadAllData();
+            } catch (error) {
+                alert('Error saving member: ' + error.message);
+            }
+        }
+
+        async function editMember(id) {
+            currentEditId = id;
+            const doc = await db.collection('members').doc(id).get();
+            const data = doc.data();
+
+            document.getElementById('memberModalTitle').textContent = 'Edit Member';
+            document.getElementById('memberName').value = data.name;
+            document.getElementById('memberEmail').value = data.email;
+            document.getElementById('memberPhone').value = data.phone;
+            document.getElementById('memberBlood').value = data.blood;
+            document.getElementById('memberFamilyHead').value = data.familyHead || '';
+            document.getElementById('memberModal').classList.add('active');
+        }
+
+        async function deleteMember(id) {
+            if (confirm('Delete this member?')) {
+                try {
+                    await db.collection('members').doc(id).delete();
+                    alert('Member deleted!');
+                    loadMembers();
+                    loadAllData();
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        // Cabinet Functions
+        function openAddCabinetModal() {
+            currentEditId = null;
+            document.getElementById('cabinetModalTitle').textContent = 'Add Cabinet Member';
+            document.getElementById('cabinetForm').reset();
+            document.getElementById('cabinetModal').classList.add('active');
+        }
+
+        function closeCabinetModal() {
+            document.getElementById('cabinetModal').classList.remove('active');
+        }
+
+        async function saveCabinet(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('cabinetName').value,
+                position: document.getElementById('cabinetPosition').value,
+                phone: document.getElementById('cabinetPhone').value,
+                photo: document.getElementById('cabinetPhoto').value
+            };
+
+            try {
+                if (currentEditId) {
+                    await db.collection('cabinet').doc(currentEditId).update(data);
+                    alert('Cabinet member updated!');
+                } else {
+                    await db.collection('cabinet').add(data);
+                    alert('Cabinet member added!');
+                }
+                closeCabinetModal();
+                loadCabinet();
+                loadAllData();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function editCabinet(id) {
+            currentEditId = id;
+            const doc = await db.collection('cabinet').doc(id).get();
+            const data = doc.data();
+
+            document.getElementById('cabinetModalTitle').textContent = 'Edit Cabinet Member';
+            document.getElementById('cabinetName').value = data.name;
+            document.getElementById('cabinetPosition').value = data.position;
+            document.getElementById('cabinetPhone').value = data.phone;
+            document.getElementById('cabinetPhoto').value = data.photo || '';
+            document.getElementById('cabinetModal').classList.add('active');
+        }
+
+        async function deleteCabinet(id) {
+            if (confirm('Delete this cabinet member?')) {
+                try {
+                    await db.collection('cabinet').doc(id).delete();
+                    alert('Cabinet member deleted!');
+                    loadCabinet();
+                    loadAllData();
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        // News Functions
+        function openAddNewsModal() {
+            currentEditId = null;
+            document.getElementById('newsModalTitle').textContent = 'Add News';
+            document.getElementById('newsForm').reset();
+            document.getElementById('newsModal').classList.add('active');
+        }
+
+        function closeNewsModal() {
+            document.getElementById('newsModal').classList.remove('active');
+        }
+
+        async function saveNews(e) {
+            e.preventDefault();
+            const data = {
+                title: document.getElementById('newsTitle').value,
+                category: document.getElementById('newsCategory').value,
+                content: document.getElementById('newsContent').value,
+                author: document.getElementById('newsAuthor').value,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                if (currentEditId) {
+                    await db.collection('news').doc(currentEditId).update(data);
+                    alert('News updated!');
+                } else {
+                    await db.collection('news').add(data);
+                    alert('News added!');
+                }
+                closeNewsModal();
+                loadNews();
+                loadAllData();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function editNews(id) {
+            currentEditId = id;
+            const doc = await db.collection('news').doc(id).get();
+            const data = doc.data();
+
+            document.getElementById('newsModalTitle').textContent = 'Edit News';
+            document.getElementById('newsTitle').value = data.title;
+            document.getElementById('newsCategory').value = data.category;
+            document.getElementById('newsContent').value = data.content;
+            document.getElementById('newsAuthor').value = data.author || '';
+            document.getElementById('newsModal').classList.add('active');
+        }
+
+        async function deleteNews(id) {
+            if (confirm('Delete this news?')) {
+                try {
+                    await db.collection('news').doc(id).delete();
+                    alert('News deleted!');
+                    loadNews();
+                    loadAllData();
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        // Events Functions
+        function openAddEventModal() {
+            currentEditId = null;
+            document.getElementById('eventModalTitle').textContent = 'Add Event';
+            document.getElementById('eventForm').reset();
+            document.getElementById('eventModal').classList.add('active');
+        }
+
+        function closeEventModal() {
+            document.getElementById('eventModal').classList.remove('active');
+        }
+
+        async function saveEvent(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('eventName').value,
+                date: new Date(document.getElementById('eventDate').value).toISOString(),
+                location: document.getElementById('eventLocation').value,
+                description: document.getElementById('eventDescription').value
+            };
+
+            try {
+                if (currentEditId) {
+                    await db.collection('events').doc(currentEditId).update(data);
+                    alert('Event updated!');
+                } else {
+                    await db.collection('events').add(data);
+                    alert('Event added!');
+                }
+                closeEventModal();
+                loadEvents();
+                loadAllData();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function editEvent(id) {
+            currentEditId = id;
+            const doc = await db.collection('events').doc(id).get();
+            const data = doc.data();
+
+            document.getElementById('eventModalTitle').textContent = 'Edit Event';
+            document.getElementById('eventName').value = data.name;
+            document.getElementById('eventDate').value = new Date(data.date).toISOString().slice(0, 16);
+            document.getElementById('eventLocation').value = data.location;
+            document.getElementById('eventDescription').value = data.description;
+            document.getElementById('eventModal').classList.add('active');
+        }
+
+        async function deleteEvent(id) {
+            if (confirm('Delete this event?')) {
+                try {
+                    await db.collection('events').doc(id).delete();
+                    alert('Event deleted!');
+                    loadEvents();
+                    loadAllData();
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        // Announcements Functions
+        function openAddAnnouncementModal() {
+            currentEditId = null;
+            document.getElementById('announcementModalTitle').textContent = 'Add Announcement';
+            document.getElementById('announcementForm').reset();
+            document.getElementById('announcementModal').classList.add('active');
+        }
+
+        function closeAnnouncementModal() {
+            document.getElementById('announcementModal').classList.remove('active');
+        }
+
+        async function saveAnnouncement(e) {
+            e.preventDefault();
+            const data = {
+                text: document.getElementById('announcementText').value,
+                priority: document.getElementById('announcementPriority').value,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                if (currentEditId) {
+                    await db.collection('announcements').doc(currentEditId).update(data);
+                    alert('Announcement updated!');
+                } else {
+                    await db.collection('announcements').add(data);
+                    alert('Announcement added!');
+                }
+                closeAnnouncementModal();
+                loadAnnouncements();
+                loadAllData();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function editAnnouncement(id) {
+            currentEditId = id;
+            const doc = await db.collection('announcements').doc(id).get();
+            const data = doc.data();
+
+            document.getElementById('announcementModalTitle').textContent = 'Edit Announcement';
+            document.getElementById('announcementText').value = data.text;
+            document.getElementById('announcementPriority').value = data.priority;
+            document.getElementById('announcementModal').classList.add('active');
+        }
+
+        async function deleteAnnouncement(id) {
+            if (confirm('Delete this announcement?')) {
+                try {
+                    await db.collection('announcements').doc(id).delete();
+                    alert('Announcement deleted!');
+                    loadAnnouncements();
+                    loadAllData();
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        // Donations Functions
+        function openAddDonationModal() {
+            currentEditId = null;
+            document.getElementById('donationModalTitle').textContent = 'Add Donation';
+            document.getElementById('donationForm').reset();
+            document.getElementById('donationDate').valueAsDate = new Date();
+            document.getElementById('donationModal').classList.add('active');
+        }
+
+        function closeDonationModal() {
+            document.getElementById('donationModal').classList.remove('active');
+        }
+
+        async function saveDonation(e) {
+            e.preventDefault();
+            const data = {
+                donor: document.getElementById('donorName').value,
+                amount: parseFloat(document.getElementById('donationAmount').value),
+                purpose: document.getElementById('donationPurpose').value,
+                date: document.getElementById('donationDate').value
+            };
+
+            try {
+                if (currentEditId) {
+                    await db.collection('donations').doc(currentEditId).update(data);
+                    alert('Donation updated!');
+                } else {
+                    await db.collection('donations').add(data);
+                    alert('Donation added!');
+                }
+                closeDonationModal();
+                loadDonations();
+                loadAllData();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function editDonation(id) {
+            currentEditId = id;
+            const doc = await db.collection('donations').doc(id).get();
+            const data = doc.data();
+
+            document.getElementById('donationModalTitle').textContent = 'Edit Donation';
+            document.getElementById('donorName').value = data.donor;
+            document.getElementById('donationAmount').value = data.amount;
+            document.getElementById('donationPurpose').value = data.purpose;
+            document.getElementById('donationDate').value = data.date;
+            document.getElementById('donationModal').classList.add('active');
+        }
+
+        async function deleteDonation(id) {
+            if (confirm('Delete this donation?')) {
+                try {
+                    await db.collection('donations').doc(id).delete();
+                    alert('Donation deleted!');
+                    loadDonations();
+                    loadAllData();
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        // Export to CSV
+        async function exportToCSV(collection) {
+            try {
+                const snapshot = await db.collection(collection).get();
+                let csv = '';
+                let headers = [];
+
+                if (snapshot.empty) {
+                    alert('No data to export');
+                    return;
+                }
+
+                const docs = snapshot.docs;
+                if (docs.length > 0) {
+                    headers = Object.keys(docs[0].data());
+                    csv = headers.join(',') + '\n';
+
+                    docs.forEach(doc => {
+                        const data = doc.data();
+                        const row = headers.map(header => {
+                            let value = data[header] || '';
+                            if (typeof value === 'object') {
+                                value = JSON.stringify(value);
+                            }
+                            value = String(value).replace(/"/g, '""');
+                            return '"' + value + '"';
+                        });
+                        csv += row.join(',') + '\n';
+                    });
+
+                    const blob = new Blob([csv], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = collection + '_' + new Date().getTime() + '.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                }
+            } catch (error) {
+                alert('Error exporting: ' + error.message);
+            }
+        }
+
+        // Close modals on background click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

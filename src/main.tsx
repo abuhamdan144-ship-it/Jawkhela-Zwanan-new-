@@ -3,11 +3,14 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 
+let isAdminMounted = false;
+
 function renderApp() {
   const rootElement = document.getElementById('root');
   if (!rootElement) return;
 
   if (window.location.hash.startsWith('#/admin') || window.location.pathname.startsWith('/admin')) {
+    isAdminMounted = true;
     // Hide static content
     document.body.style.backgroundColor = '#020617'; // slate-950
     Array.from(document.body.children).forEach((child) => {
@@ -30,7 +33,7 @@ function renderApp() {
 renderApp();
 
 window.addEventListener('hashchange', () => {
-  if (window.location.hash.startsWith('#/admin')) {
+  if (window.location.hash.startsWith('#/admin') && !isAdminMounted) {
     window.location.reload();
   }
 });

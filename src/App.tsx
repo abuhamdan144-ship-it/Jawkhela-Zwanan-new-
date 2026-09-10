@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AdminLayout } from './components/AdminLayout';
 import { DashboardHome } from './pages/admin/DashboardHome';
 import { CollectionManager } from './pages/admin/CollectionManager';
+import { BloodBank } from './pages/admin/BloodBank';
 import { Settings } from './pages/admin/Settings';
 import { Login } from './pages/admin/Login';
 
@@ -12,6 +13,7 @@ export default function App() {
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardHome />} />
+          <Route path="bloodbank" element={<BloodBank />} />
           <Route path="programs" element={<CollectionManager collectionName="programs" title="Programs" template={{t: 'Title', c: 'Category', d: 'Desc', m: 'Meta', icon: 'book'}} />} />
           <Route path="projects" element={<CollectionManager collectionName="projects" title="Projects" template={{tag: 'Tag', t: 'Title', d: 'Desc', pct: 0, raised: '', goal: '', g: ['#000', '#fff']}} />} />
           <Route path="events" element={<CollectionManager collectionName="events" title="Events" template={{d: '12', mo: 'Jan', t: 'Event Title', w: 'When', s: 'Details', going: 0}} />} />

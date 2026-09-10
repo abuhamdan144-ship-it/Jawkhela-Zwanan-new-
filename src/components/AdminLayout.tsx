@@ -53,6 +53,7 @@ export function AdminLayout() {
 
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
+    { name: 'Blood Bank / Members', path: '/admin/bloodbank', icon: Activity },
     { name: 'Programs', path: '/admin/programs', icon: LayoutDashboard },
     { name: 'Projects', path: '/admin/projects', icon: LayoutDashboard },
     { name: 'Events', path: '/admin/events', icon: LayoutDashboard },

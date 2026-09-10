@@ -395,11 +395,6 @@ footer{border-top:1px solid var(--line);background:var(--bg2);padding:64px 0 30p
   html{scroll-behavior:auto}
 }
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -480,9 +475,6 @@ footer{border-top:1px solid var(--line);background:var(--bg2);padding:64px 0 30p
 /* ================= ADMIN DASHBOARD ================= */
 #adminPanel{display:none;position:fixed;inset:0;z-index:300;background:rgba(2,6,15,.88);backdrop-filter:blur(16px);overflow:auto;padding:24px}.admin-shell{max-width:1180px;margin:32px auto;background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:0 30px 100px rgba(0,0,0,.5);overflow:hidden}.admin-top{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:22px 28px;border-bottom:1px solid var(--line);background:linear-gradient(120deg,rgba(52,211,153,.12),rgba(34,211,238,.05))}.admin-top h2{font-size:1.6rem}.admin-top p{color:var(--muted);font-size:.84rem}.admin-close{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;width:40px;height:40px;font-size:1.2rem}.admin-body{padding:28px}.admin-login{max-width:440px;margin:35px auto}.admin-login h3{font-size:1.7rem;margin-bottom:8px}.admin-form{display:grid;gap:12px}.admin-form label{font-size:.78rem;color:var(--muted);font-weight:700}.admin-form input,.admin-form textarea,.admin-form select{width:100%;margin-top:5px;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:12px 13px;color:var(--ink);outline:none}.admin-form textarea{min-height:360px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;line-height:1.55}.admin-form input:focus,.admin-form textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--hero-glow1)}.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.admin-tab{background:var(--chip);border:1px solid var(--line);color:var(--ink);padding:9px 13px;border-radius:99px}.admin-tab.on{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#06131a;border-color:transparent;font-weight:800}.admin-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.admin-status{color:var(--muted);font-size:.83rem}.admin-denied{padding:40px;text-align:center}.admin-denied strong{display:block;color:var(--rose);font-size:1.3rem;margin-bottom:8px}
 @media(max-width:700px){#adminPanel{padding:8px}.admin-shell{margin:8px auto;border-radius:16px}.admin-top,.admin-body{padding:18px}.admin-top h2{font-size:1.25rem}#adminLink{display:none}}
-
-/* ================= MEMBERSHIP CARD ================= */
-.membership-card{border:1px solid rgba(52,211,153,.4);border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#0d2d3a 0%,#111827 58%,#153e52 100%);box-shadow:0 18px 45px rgba(0,0,0,.25);color:#effff9}.membership-card-top,.membership-card-foot{display:flex;align-items:center;gap:10px;padding:12px 15px;font-size:.65rem;letter-spacing:.13em;font-weight:800}.membership-card-top{border-bottom:1px solid rgba(255,255,255,.12)}.membership-card-foot{justify-content:space-between;color:#a7c8c5;border-top:1px solid rgba(255,255,255,.12);letter-spacing:.04em;text-transform:none}.membership-mini-logo{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#34d399,#22d3ee);color:#06131a;font-weight:900;letter-spacing:0}.membership-year{margin-left:auto;color:#f5b942}.membership-card-body{display:flex;align-items:center;gap:14px;padding:22px 15px}.membership-avatar{display:grid;place-items:center;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#34d399,#22d3ee);color:#06131a;font-size:1rem;font-weight:900}.membership-card-body small,.membership-card-body strong,.membership-card-body span{display:block}.membership-card-body small{font-size:.59rem;color:#8de8ce;letter-spacing:.12em;font-weight:800}.membership-card-body strong{font-size:1.15rem;margin:4px 0}.membership-card-body span{font-size:.72rem;color:#b6d0d0}.membership-badge{display:inline-flex;border-radius:99px;padding:5px 9px;font-size:.65rem;font-weight:800;letter-spacing:.04em}.membership-badge.pending{background:rgba(245,185,66,.16);color:#f5b942}.membership-badge.approved{background:rgba(52,211,153,.16);color:#5ee7b7}.membership-badge.rejected{background:rgba(251,113,133,.16);color:#fb7185}.membership-admin-list{display:grid;gap:12px;margin-top:16px}.membership-admin-row{border:1px solid var(--line);background:var(--chip);border-radius:14px;padding:14px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}.membership-admin-row .meta{color:var(--muted);font-size:.8rem}.membership-admin-row .actions{display:flex;gap:8px;flex-wrap:wrap}
 </style>
         </svg>
       </div>
@@ -605,31 +597,33 @@ footer{border-top:1px solid var(--line);background:var(--bg2);padding:64px 0 30p
     <div class="sec-head center reveal"><div class="kicker">Get involved</div><h2>Join, volunteer, <span class="grad">contribute</span></h2><p>Membership is free. Volunteering is joyful. Donations are transparent.</p></div>
     <div class="join-grid">
       <div class="card pad reveal">
-        <h3 style="margin-bottom:6px">Become a volunteer</h3>
-        <p style="color:var(--muted);font-size:.9rem;margin-bottom:22px">Fill this in — our coordinator replies within 2 days. <span id="volCount" style="color:var(--gold);font-weight:700"></span></p>
-        <form id="volForm" novalidate>
+                <h3 style="margin-bottom:6px">Membership Registration</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:22px">Become an official member. Your details help us coordinate community support.</p>
+        <form id="memberForm" novalidate>
           <div class="row">
-            <div class="field"><label for="vName">Full name</label><input id="vName" name="name" type="text" placeholder="e.g. Ahmad Jawid" autocomplete="name" /><div class="err">Please enter your name (3+ letters).</div></div>
-            <div class="field"><label for="vPhone">Phone / WhatsApp</label><input id="vPhone" name="phone" type="tel" placeholder="07XX XXX XXX" autocomplete="tel" /><div class="err">Please enter a valid phone number (7+ digits).</div></div>
+            <div class="field"><label for="mName">Full name</label><input id="mName" name="name" type="text" placeholder="e.g. Ahmad Jawid" autocomplete="name" required/><div class="err">Please enter your name.</div></div>
+            <div class="field"><label for="mEmail">Email</label><input id="mEmail" name="email" type="email" placeholder="example@mail.com" autocomplete="email" required/><div class="err">Please enter a valid email.</div></div>
           </div>
           <div class="row">
-            <div class="field"><label for="vAge">Age</label><input id="vAge" name="age" type="number" min="10" max="99" placeholder="e.g. 19" /><div class="err">Age must be between 10 and 99.</div></div>
-            <div class="field"><label for="vInt">Area of interest</label><select id="vInt" name="interest"><option>Education &amp; Literacy</option><option>Sports &amp; Health</option><option>Environment</option><option>Arts &amp; Culture</option><option>Skills &amp; Livelihood</option><option>Community Service</option></select></div>
+            <div class="field"><label for="mPhone">Phone / WhatsApp</label><input id="mPhone" name="phone" type="tel" placeholder="07XX XXX XXX" autocomplete="tel" required/><div class="err">Please enter a valid phone number.</div></div>
+            <div class="field"><label for="mPassword">Password</label><input id="mPassword" name="password" type="password" placeholder="Min 6 characters" required/><div class="err">Password must be at least 6 characters.</div></div>
           </div>
-          <div class="field"><label for="vMsg">Why do you want to join? <span style="color:var(--faint)">(optional)</span></label><textarea id="vMsg" name="message" rows="3" placeholder="Tell us in a line or two…"></textarea></div>
-          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Submit Application →</button>
-          <div id="membershipSubmitStatus" class="admin-status" style="margin-top:12px"></div>
+          <div class="row">
+            <div class="field"><label for="mIdCard">ID Card Number (Tazkira/NID)</label><input id="mIdCard" name="idcard" type="text" placeholder="ID Number" required/><div class="err">ID Card number required.</div></div>
+            <div class="field"><label for="mBlood">Blood Group</label>
+              <select id="mBlood" name="bloodgroup" required>
+                <option value="">Select...</option>
+                <option value="A+">A+</option><option value="A-">A-</option>
+                <option value="B+">B+</option><option value="B-">B-</option>
+                <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                <option value="O+">O+</option><option value="O-">O-</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            <div class="err">Blood group required.</div></div>
+          </div>
+          <div class="field"><label for="mPhoto">Profile Photo (Optional)</label><input id="mPhoto" name="photo" type="file" accept="image/*" /></div>
+          <button type="submit" class="btn btn-primary" id="memberSubmitBtn" style="width:100%;justify-content:center">Register as Member →</button>
         </form>
-      </div>
-      <div class="card pad reveal" data-d="1">
-        <div style="display:flex;justify-content:space-between;gap:12px;align-items:start;margin-bottom:16px"><div><div class="kicker">Live preview</div><h3>Membership card</h3></div><span id="membershipStatusBadge" class="membership-badge pending">Preview</span></div>
-        <div id="membershipCardPreview" class="membership-card">
-          <div class="membership-card-top"><span class="membership-mini-logo">ZJ</span><span>ZWANAN JAWKHELA</span><span class="membership-year">2026</span></div>
-          <div class="membership-card-body"><div class="membership-avatar" id="membershipAvatar">ZJ</div><div><small>COMMUNITY MEMBER</small><strong id="membershipPreviewName">Your name</strong><span id="membershipPreviewInterest">Your area of interest</span><span id="membershipPreviewId">Application pending</span></div></div>
-          <div class="membership-card-foot"><span>Jawkhela Village</span><span id="membershipPreviewStatus">Pending approval</span></div>
-        </div>
-        <p id="membershipApprovalHint" style="color:var(--muted);font-size:.84rem;margin:14px 0 0">Complete the form to create your preview. PDF download unlocks after admin approval.</p>
-        <button type="button" class="btn btn-primary" id="downloadMembershipPdf" style="width:100%;justify-content:center;margin-top:14px;display:none">Download approved card PDF</button>
       </div>
       <div style="display:grid;gap:22px">
         <div class="card pad reveal" data-d="1">
@@ -720,15 +714,7 @@ footer{border-top:1px solid var(--line);background:var(--bg2);padding:64px 0 30p
 </div>
 
 
-<div id="adminPanel" aria-hidden="true">
-  <div class="admin-shell">
-    <div class="admin-top"><div><h2>Zwanan Jawkhela Admin</h2><p>Manage the public website content through Firebase.</p></div><button class="admin-close" id="adminClose" aria-label="Close admin">×</button></div>
-    <div class="admin-body">
-      <div class="admin-login" id="adminLoginView"><h3>Admin sign in</h3><p style="color:var(--muted);margin-bottom:20px">Use a Firebase Auth account whose <code>members/{uid}</code> document has <code>role: "admin"</code>.</p><form class="admin-form" id="adminLoginForm"><label>Email<input id="adminEmail" type="email" required autocomplete="username"></label><label>Password<input id="adminPassword" type="password" required autocomplete="current-password"></label><button class="btn btn-primary" type="submit">Sign in securely</button><span class="admin-status" id="adminLoginStatus"></span></form></div>
-      <div id="adminEditorView" style="display:none"><div class="admin-actions" style="justify-content:space-between;margin-bottom:18px"><div><b id="adminUser"></b><span class="admin-status" id="adminSyncStatus" style="margin-left:10px"></span></div><button class="btn btn-ghost btn-sm" id="adminLogout" type="button">Sign out</button></div><div class="admin-tabs" id="adminTabs"></div><div id="membershipAdminView" style="display:none"><h3>Membership applications</h3><p class="admin-status">Approve an application to unlock the applicant’s downloadable PDF card.</p><div id="membershipAdminList" class="membership-admin-list"></div></div><form class="admin-form" id="adminEditorForm"><label id="adminEditorLabel">Content JSON<textarea id="adminJson" spellcheck="false"></textarea></label><div class="admin-actions"><button class="btn btn-primary" type="submit">Save section</button><button class="btn btn-ghost" type="button" id="adminReload">Reload from Firebase</button><button class="btn btn-ghost" type="button" id="adminReset">Reset this section to demo</button><span class="admin-status" id="adminEditorStatus"></span></div></form></div>
-      <div id="adminDeniedView" class="admin-denied" style="display:none"><strong>Admin access required</strong><p style="color:var(--muted)">This account is signed in but is not marked as an administrator.</p></div>
-    </div>
-  </div>
+
 </div>
 
 <div id="toasts" aria-live="polite"></div>
@@ -738,7 +724,15 @@ footer{border-top:1px solid var(--line);background:var(--bg2);padding:64px 0 30p
 (function(){
 'use strict';
 /* ================= MOCK DATA ================= */
-var PROGRAMS=[
+var _s=_sd.settings;
+if(_s){
+  if(_s.title) document.title=_s.title;
+  window.addEventListener('DOMContentLoaded', function() {
+    if(_s.heroLead) { var hl = document.querySelector('.hero p.lead'); if(hl) hl.textContent = _s.heroLead; }
+    if(_s.aboutText) { var at = document.querySelector('#about .sec-head p'); if(at) at.textContent = _s.aboutText; }
+  });
+}
+var _sd={};try{_sd=JSON.parse(localStorage.getItem('zj-site-content')||'{}')}catch(e){}var PROGRAMS=_sd.PROGRAMS&&_sd.PROGRAMS.length?_sd.PROGRAMS:[
  {t:'Education & Literacy',c:'Learn',d:'Evening classes, exam prep and a girls’ learning circle — 320 learners and counting.',m:'320 learners · Mon–Thu',icon:'book'},
  {t:'Football League',c:'Play',d:'12 village teams, a summer cup and coaching for under-14s on the new ground.',m:'12 teams · Fri & Sat',icon:'ball'},
  {t:'Green Village',c:'Plant',d:'Tree planting, waste collection and kitchen gardens. 5,000 trees is our 2026 goal.',m:'1,900 planted · Sundays',icon:'leaf'},
@@ -746,13 +740,13 @@ var PROGRAMS=[
  {t:'Skills & Livelihood',c:'Earn',d:'Tailoring, mobile repair, beekeeping and small-business mentoring for youth.',m:'140 graduates · Evenings',icon:'tool'},
  {t:'Community Service',c:'Serve',d:'Friday cleanups, elder visits, blood drives and help for families in need.',m:'Every Friday · 7am',icon:'heart'}
 ];
-var PROJECTS=[
+var PROJECTS=_sd.PROJECTS&&_sd.PROJECTS.length?_sd.PROJECTS:[
  {tag:'Education',t:'Village Library & Study Hall',d:'200 m² of shelves, solar light and 3,000 books — a quiet place to dream big.',pct:72,raised:'₳ 216,000',goal:'₳ 300,000',g:['#34d399','#0ea5e9']},
  {tag:'Water',t:'Clean Water Points',d:'Three filtered water points with maintenance training for every zone.',pct:45,raised:'₳ 90,000',goal:'₳ 200,000',g:['#22d3ee','#3b82f6']},
  {tag:'Sports',t:'Football Ground Upgrade',d:'Levelled pitch, goals, night lights and a small stand for supporters.',pct:88,raised:'₳ 132,000',goal:'₳ 150,000',g:['#f5b942','#fb7185']},
  {tag:'Environment',t:'5,000 Trees by Winter',d:'Poplar, almond and pine saplings with drip lines and student caretakers.',pct:38,raised:'1,900 trees',goal:'5,000 trees',g:['#4ade80','#a3e635']}
 ];
-var EVENTS=[
+var EVENTS=_sd.EVENTS&&_sd.EVENTS.length?_sd.EVENTS:[
  {d:'12',mo:'Sep',t:'Grand Village Cleanup',w:'Saturday · 7:00 AM · Village Square',s:'Gloves, bags and breakfast provided. All nine zones compete for the Golden Broom.',going:186},
  {d:'19',mo:'Sep',t:'Autumn Football Cup — Finals',w:'Saturday · 3:00 PM · New Ground',s:'The two best teams of the season meet. Entry free, drums welcome.',going:342},
  {d:'26',mo:'Sep',t:'Book Fair & Story Hour',w:'Saturday · 10:00 AM · Library Site',s:'Swap books, meet young poets and enjoy story hour for children.',going:128},
@@ -760,7 +754,7 @@ var EVENTS=[
  {d:'10',mo:'Oct',t:'Health & Blood Drive Camp',w:'Saturday · 9:00 AM · Community Hall',s:'Free checkups with visiting doctors and a voluntary blood drive.',going:167},
  {d:'24',mo:'Oct',t:'Cultural Night & Poetry',w:'Saturday · 6:00 PM · Community Hall',s:'Rubab, attan practice, poetry and the famous village mantu stall.',going:295}
 ];
-var TEAM=[
+var TEAM=_sd.TEAM&&_sd.TEAM.length?_sd.TEAM:[
  {n:'Farhad Ahmadi',r:'Coordinator',d:'Teacher, 26. Founded the first study circle in 2019.',i:'FA'},
  {n:'Laila Noori',r:'Education Lead',d:'Runs the girls’ learning circle and the library fund.',i:'LN'},
  {n:'Edris Karimi',r:'Sports Lead',d:'Ex-player coaching 140 kids across three age groups.',i:'EK'},
@@ -768,13 +762,13 @@ var TEAM=[
  {n:'Shabir Mohammadi',r:'Culture Lead',d:'Rubab player keeping village music alive.',i:'SM'},
  {n:'Nadia Rahimi',r:'Finance & Trust',d:'Publishes every budget on the village board.',i:'NR'}
 ];
-var STORIES=[
+var STORIES=_sd.STORIES&&_sd.STORIES.length?_sd.STORIES:[
  {q:'“I joined for football and stayed for the library. Last spring I passed my university entrance exam — my study circle carried me there.”',n:'Jawid S.',w:'Member since 2021 · Student',i:'JS'},
  {q:'“Our zone won the Golden Broom twice. My children now remind ME not to throw litter. That is the real victory.”',n:'Bibi Gul',w:'Volunteer · Zone 4',i:'BG'},
  {q:'“The tailoring course gave me my own machine and my first customers. I teach two other girls now.”',n:'Spozhmai K.',w:'Skills graduate · 2024',i:'SK'},
  {q:'“From abroad I watch every project report. Transparent budgets are why our diaspora keeps giving.”',n:'Haroon M.',w:'Supporter · Abroad',i:'HM'}
 ];
-var GALLERY=[
+var GALLERY=_sd.GALLERY&&_sd.GALLERY.length?_sd.GALLERY:[
  {t:'Cup Final 2025',c:'Sports',d:'A full stand watched Zone 3 lift the trophy at sunset.',g:['#0ea5e9','#22d3ee']},
  {t:'Study Circle',c:'Learning',d:'Evening exam prep under the new solar lamps.',g:['#8b5cf6','#22d3ee']},
  {t:'Planting Day',c:'Environment',d:'400 saplings along Hill Road in a single morning.',g:['#16a34a','#a3e635']},
@@ -784,12 +778,12 @@ var GALLERY=[
  {t:'Mantu Stall',c:'Culture',d:'The famous fundraising stall at Cultural Night.',g:['#ea580c','#fbbf24']},
  {t:'New Ground',c:'Sports',d:'Night lights on for the first evening match.',g:['#1d4ed8','#34d399']}
 ];
-var NEWS=[
+var NEWS=_sd.NEWS&&_sd.NEWS.length?_sd.NEWS:[
  {d:'02 Sep 2026',t:'Library walls are up',p:'The study hall structure is complete. Next: roof, solar panels and the first 1,000 books.',g:['#34d399','#0ea5e9']},
  {d:'28 Aug 2026',t:'Zone 3 wins Summer Cup',p:'A 2–1 thriller decided in the final minute. 900 villagers watched from the new stand.',g:['#f5b942','#fb7185']},
  {d:'15 Aug 2026',t:'1,900 trees and growing',p:'Hill Road is green again. Autumn planting target: 1,100 more saplings.',g:['#4ade80','#0d9488']}
 ];
-var FAQS=[
+var FAQS=_sd.FAQS&&_sd.FAQS.length?_sd.FAQS:[
  {q:'Who can join Zwanan Jawkhela?',a:'Everyone from the village aged 10 and above — boys and girls, students and workers. Membership is free and takes two minutes at the community hall or through the volunteer form above.'},
  {q:'When and where do you meet?',a:'The community hall is open Saturday to Thursday, 8am–6pm. Big gatherings happen on Fridays (cleanup at 7am, tea at 4pm) and programs run on weekday evenings.'},
  {q:'How are donations used?',a:'Every project has a public budget posted on the village board and announced monthly. Our finance lead publishes income, spending and receipts — no exceptions.'},
@@ -902,8 +896,7 @@ var lbx=$('#lightbox');if(lbx)lbx.addEventListener('click',function(e){if(e.targ
 function volunteers(){try{return JSON.parse(localStorage.getItem('zj-vols')||'[]')}catch(e){return[]}}
 function paintVol(){var el=$('#volCount');if(el){var n=volunteers().length;el.textContent=n>0?'· '+n+' application'+(n>1?'s':'')+' saved on this device':''}}
 paintVol();
-var vf=$('#volForm');
-if(vf)vf.addEventListener('submit',function(e){e.preventDefault();var ok=true;ok=check($('#vName'),function(v){return v.trim().length>=3})&&ok;ok=check($('#vPhone'),function(v){return v.replace(/\D/g,'').length>=7})&&ok;ok=check($('#vAge'),function(v){var n=parseInt(v,10);return n>=10&&n<=99})&&ok;if(!ok){toast('Please fix the highlighted fields.');return}var arr=volunteers();arr.push({n:$('#vName').value.trim(),p:$('#vPhone').value.trim(),a:$('#vAge').value,i:$('#vInt').value,at:new Date().toISOString()});try{localStorage.setItem('zj-vols',JSON.stringify(arr)); window.dispatchEvent(new Event('zwanana:sync'))}catch(err){}vf.reset();paintVol();toast('Application received! Our coordinator will call you within 2 days.')});
+
 $all('#volForm input,#volForm select').forEach(function(i){i.addEventListener('input',function(){var f=i.closest('.field');if(f)f.classList.remove('bad')})});
 var nf=$('#newsForm');
 if(nf)nf.addEventListener('submit',function(e){e.preventDefault();var em=$('#nEmail');if(!em||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())){var f=em?em.closest('.field'):null;if(f)f.classList.add('bad');toast('Please enter a valid email address.');return}try{var subs=JSON.parse(localStorage.getItem('zj-news')||'[]');subs.push(em.value.trim());localStorage.setItem('zj-news',JSON.stringify(subs));window.dispatchEvent(new Event('zwanana:sync'))}catch(err){}nf.reset();toast('Subscribed! The next village letter arrives in your inbox.')});
@@ -920,39 +913,8 @@ function bindTilt(){if(!window.matchMedia||!matchMedia('(pointer:fine)').matches
 (function(){if(!window.matchMedia||!matchMedia('(pointer:fine)').matches)return;$all('.magnetic').forEach(function(b){b.addEventListener('mousemove',function(e){var r=b.getBoundingClientRect();b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.12)+'px,'+((e.clientY-r.top-r.height/2)*.18)+'px)'});b.addEventListener('mouseleave',function(){b.style.transform=''})})})();
 })();
 </script>
-<script>
-/* Firebase integration and authenticated admin dashboard. */
-const firebaseConfig={apiKey:"AIzaSyCZYZeOF8oS9K-8hRqMsSrvBaCK9es6uWA",authDomain:"data-1-d387e.firebaseapp.com",projectId:"data-1-d387e",storageBucket:"data-1-d387e.firebasestorage.app",messagingSenderId:"54009693633",appId:"1:54009693633:web:ea3626c01cc38d086c5b40",measurementId:"G-694ER56E89"};
-const firebaseApp=firebase.initializeApp(firebaseConfig);try{firebase.analytics()}catch(e){console.info('Firebase Analytics unavailable.')}
-const firebaseDb=firebase.firestore(),firebaseAuth=firebase.auth(),firebaseSiteDoc=firebaseDb.collection('zwanana').doc('siteData'),firebaseContentDoc=firebaseDb.collection('siteSettings').doc('public');
-function syncZwananaToFirebase(){return firebaseSiteDoc.set({volunteers:JSON.parse(localStorage.getItem('zj-vols')||'[]'),newsletterSubscribers:JSON.parse(localStorage.getItem('zj-news')||'[]'),theme:localStorage.getItem('zj-theme')||'midnight',updatedAt:new Date().toISOString()},{merge:true})}
-window.addEventListener('zwanana:sync',function(){syncZwananaToFirebase().catch(function(e){console.warn('Firebase sync unavailable:',e)})});setTimeout(function(){syncZwananaToFirebase().catch(function(){})},900);
-function openAdmin(){var p=document.getElementById('adminPanel');if(p){p.style.display='block';p.setAttribute('aria-hidden','false');location.hash='admin'}}
-function closeAdmin(){var p=document.getElementById('adminPanel');if(p){p.style.display='none';p.setAttribute('aria-hidden','true');if(location.hash==='#admin')history.replaceState(null,'',location.pathname+location.search)}}
-document.getElementById('adminLink')?.addEventListener('click',function(e){e.preventDefault();openAdmin()});document.getElementById('adminClose')?.addEventListener('click',closeAdmin);if(location.hash==='#admin')openAdmin();
-var adminSections={PROGRAMS:'Programs',PROJECTS:'Projects',EVENTS:'Events',TEAM:'Team / cabinet',STORIES:'Member stories',GALLERY:'Gallery',NEWS:'News',FAQS:'FAQ',settings:'Site settings',memberships:'Membership approvals'};var adminData={};var activeAdminSection='PROGRAMS';var adminTabs=document.getElementById('adminTabs');Object.keys(adminSections).forEach(function(k){var b=document.createElement('button');b.type='button';b.className='admin-tab';b.dataset.section=k;b.textContent=adminSections[k];b.addEventListener('click',function(){activeAdminSection=k;document.querySelectorAll('.admin-tab').forEach(function(x){x.classList.toggle('on',x.dataset.section===k)});paintAdminEditor()});adminTabs?.appendChild(b)});
-function paintAdminEditor(){document.querySelectorAll('.admin-tab').forEach(function(x){x.classList.toggle('on',x.dataset.section===activeAdminSection)});var isMembers=activeAdminSection==='memberships';document.getElementById('membershipAdminView').style.display=isMembers?'block':'none';document.getElementById('adminEditorForm').style.display=isMembers?'none':'grid';if(isMembers){loadMembershipApplications();return}var e=document.getElementById('adminJson');if(e)e.value=JSON.stringify(adminData[activeAdminSection]||{},null,2);var l=document.getElementById('adminEditorLabel');if(l)l.firstChild.textContent=adminSections[activeAdminSection]+' JSON'}
-function showEditor(){document.getElementById('adminLoginView').style.display='none';document.getElementById('adminDeniedView').style.display='none';document.getElementById('adminEditorView').style.display='block';paintAdminEditor()}
-function showDenied(){document.getElementById('adminLoginView').style.display='none';document.getElementById('adminEditorView').style.display='none';document.getElementById('adminDeniedView').style.display='block'}
-function membershipBadge(status){return '<span class="membership-badge '+status+'">'+status.charAt(0).toUpperCase()+status.slice(1)+'</span>'}
-function loadMembershipApplications(){var list=document.getElementById('membershipAdminList');if(!list)return;list.innerHTML='<p class="admin-status">Loading applications…</p>';firebaseDb.collection('membershipApplications').orderBy('createdAt','desc').limit(100).get().then(function(s){if(s.empty){list.innerHTML='<p class="admin-status">No membership applications yet.</p>';return}list.innerHTML='';s.forEach(function(doc){var a=doc.data();var row=document.createElement('div');row.className='membership-admin-row';row.innerHTML='<div><b>'+escapeHtml(a.name||'Unnamed')+'</b> '+membershipBadge(a.status||'pending')+'<div class="meta">'+escapeHtml(a.phone||'')+' · '+escapeHtml(a.interest||'')+' · '+escapeHtml(a.applicationId||doc.id)+'</div></div><div class="actions">'+(a.status==='pending'?'<button class="btn btn-primary btn-sm" data-action="approve">Approve</button><button class="btn btn-ghost btn-sm" data-action="reject">Reject</button>':'<button class="btn btn-ghost btn-sm" data-action="revoke">Revoke approval</button>')+'</div>';row.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){var next=b.dataset.action==='approve'?'approved':b.dataset.action==='reject'?'rejected':'pending';firebaseDb.collection('membershipApplications').doc(doc.id).update({status:next,reviewedAt:new Date().toISOString(),reviewedBy:firebaseAuth.currentUser.uid}).then(loadMembershipApplications).catch(function(e){alert(e.message)})})});list.appendChild(row)})}).catch(function(e){list.innerHTML='<p class="admin-status">Could not load applications: '+escapeHtml(e.message)+'</p>'})}
-function escapeHtml(v){return String(v).replace(/[&<>'"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]})}
-function loadAdminContent(){return firebaseContentDoc.get().then(function(s){adminData=s.exists?(s.data().content||{}):{};if(!Object.keys(adminData).length){adminData={PROGRAMS:PROGRAMS,PROJECTS:PROJECTS,EVENTS:EVENTS,TEAM:TEAM,STORIES:STORIES,GALLERY:GALLERY,NEWS:NEWS,FAQS:FAQS,settings:{title:document.title,heroLead:document.querySelector('.hero p.lead')?.textContent||'',aboutText:document.querySelector('#about .sec-head p')?.textContent||''}}}showEditor()})}
-function isAdminUser(u){return firebaseDb.collection('members').doc(u.uid).get().then(function(s){return s.exists&&s.data().role==='admin'})}
-firebaseAuth.onAuthStateChanged(function(u){if(!u)return;document.getElementById('adminUser').textContent=u.email||u.uid;isAdminUser(u).then(function(ok){if(ok)loadAdminContent().catch(function(e){document.getElementById('adminSyncStatus').textContent='Could not load content: '+e.message});else showDenied()}).catch(showDenied)});
-document.getElementById('adminLoginForm')?.addEventListener('submit',function(e){e.preventDefault();var s=document.getElementById('adminLoginStatus');s.textContent='Signing in…';firebaseAuth.signInWithEmailAndPassword(document.getElementById('adminEmail').value,document.getElementById('adminPassword').value).catch(function(err){s.textContent=err.message})});document.getElementById('adminLogout')?.addEventListener('click',function(){firebaseAuth.signOut().then(function(){closeAdmin();location.reload()})});
-document.getElementById('adminEditorForm')?.addEventListener('submit',function(e){e.preventDefault();var status=document.getElementById('adminEditorStatus');try{adminData[activeAdminSection]=JSON.parse(document.getElementById('adminJson').value);status.textContent='Saving…';firebaseContentDoc.set({content:adminData,updatedAt:new Date().toISOString(),updatedBy:firebaseAuth.currentUser.uid},{merge:true}).then(function(){localStorage.setItem('zj-site-content',JSON.stringify(adminData));status.textContent='Saved. Reloading public site…';setTimeout(function(){location.reload()},500)}).catch(function(err){status.textContent=err.message})}catch(err){status.textContent='Invalid JSON: '+err.message}});
-document.getElementById('adminReload')?.addEventListener('click',function(){loadAdminContent().catch(function(err){document.getElementById('adminEditorStatus').textContent=err.message})});document.getElementById('adminReset')?.addEventListener('click',function(){if(activeAdminSection==='settings')adminData.settings={title:document.title,heroLead:'Zwanan Jawkhela is the youth community platform of Jawkhela village — 1,200+ members learning, playing, planting and building together. Explore programs, join events, follow projects and find your place.'};else{var source=window.ZJ_DEMO_CONTENT;adminData[activeAdminSection]=source[activeAdminSection]}paintAdminEditor()});
-function membershipInitials(name){return (name||'ZJ').trim().split(/\s+/).slice(0,2).map(function(x){return x[0]}).join('').toUpperCase()||'ZJ'}
-function paintMembershipPreview(data){var name=data.name||'Your name',initials=membershipInitials(name);document.getElementById('membershipPreviewName').textContent=name;document.getElementById('membershipAvatar').textContent=initials;document.getElementById('membershipPreviewInterest').textContent=data.interest||'Your area of interest';document.getElementById('membershipPreviewId').textContent=data.applicationId?'ID '+data.applicationId:'Application pending';var status=data.status||'pending';document.getElementById('membershipPreviewStatus').textContent=status==='approved'?'Approved member':status==='rejected'?'Application declined':'Pending approval';var badge=document.getElementById('membershipStatusBadge');badge.textContent=status==='approved'?'Approved':status==='rejected'?'Rejected':'Preview';badge.className='membership-badge '+status;document.getElementById('downloadMembershipPdf').style.display=status==='approved'?'flex':'none';document.getElementById('membershipApprovalHint').textContent=status==='approved'?'Your membership is approved. Download your card below.':status==='rejected'?'This application was not approved. Please contact the community team.':'Complete the form to create your preview. PDF download unlocks after admin approval.'}
-var membershipAppId=localStorage.getItem('zj-membership-app-id')||'';var membershipDocUnsub=null;
-function membershipFormData(){return {name:document.getElementById('vName')?.value.trim()||'',phone:document.getElementById('vPhone')?.value.trim()||'',age:document.getElementById('vAge')?.value||'',interest:document.getElementById('vInt')?.value||'',message:document.getElementById('vMsg')?.value.trim()||''}}
-['vName','vPhone','vAge','vInt'].forEach(function(id){document.getElementById(id)?.addEventListener('input',function(){paintMembershipPreview(membershipFormData())})});paintMembershipPreview({});
-function listenForMembershipApproval(id){if(membershipDocUnsub)membershipDocUnsub();membershipDocUnsub=firebaseDb.collection('membershipApplications').doc(id).onSnapshot(function(s){if(!s.exists)return;var a=s.data();paintMembershipPreview(a);if(a.status==='approved')document.getElementById('membershipSubmitStatus').textContent='Approved — your PDF card is ready.'})}
-var oldMembershipForm=document.getElementById('volForm');oldMembershipForm?.addEventListener('submit',function(e){e.preventDefault();var data=membershipFormData();if(data.name.length<3||data.phone.replace(/\D/g,'').length<7||!data.age){return}var status=document.getElementById('membershipSubmitStatus');status.textContent='Submitting membership application…';(firebaseAuth.currentUser?Promise.resolve(firebaseAuth.currentUser):firebaseAuth.signInAnonymously()).then(function(cred){var uid=cred.user?cred.user.uid:firebaseAuth.currentUser.uid;var id='M-'+Date.now().toString(36).toUpperCase();data.applicationId=id;data.status='pending';data.ownerUid=uid;data.createdAt=new Date().toISOString();return firebaseDb.collection('membershipApplications').doc(id).set(data).then(function(){membershipAppId=id;localStorage.setItem('zj-membership-app-id',id);listenForMembershipApproval(id);status.textContent='Application submitted. Save this browser to receive approval updates: '+id;oldMembershipForm.reset();paintMembershipPreview(data)})}).catch(function(err){status.textContent='Could not submit: '+err.message})},true);
-if(membershipAppId)listenForMembershipApproval(membershipAppId);
-document.getElementById('downloadMembershipPdf')?.addEventListener('click',function(){var a=membershipFormData();var id=membershipAppId||'approved';var js=window.jspdf?.jsPDF;if(!js){alert('PDF library is still loading. Please try again.');return}var doc=new js({orientation:'landscape',unit:'mm',format:[86,54]});doc.setFillColor(10,38,50);doc.roundedRect(4,4,78,46,4,4,'F');doc.setFillColor(52,211,153);doc.circle(14,14,5,'F');doc.setTextColor(6,19,26);doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('ZJ',11.5,16);doc.setTextColor(239,255,249);doc.setFontSize(8);doc.text('ZWANAN JAWKHELA',23,15);doc.setFontSize(5);doc.setTextColor(141,232,206);doc.text('COMMUNITY MEMBER',23,23);doc.setTextColor(239,255,249);doc.setFontSize(13);doc.text(a.name||'Member',23,30);doc.setFontSize(6);doc.setTextColor(182,208,208);doc.text(a.interest||'Community member',23,36);doc.text('Member ID: '+id,23,42);doc.setDrawColor(80,145,145);doc.line(5,45,81,45);doc.setFontSize(5);doc.text('Jawkhela Village · Approved membership',7,49);doc.save('zwanan-membership-'+id+'.pdf')});
-function loadPublishedContent(){firebaseContentDoc.get().then(function(s){if(!s.exists)return;var c=s.data().content;if(!c)return;var current=localStorage.getItem('zj-site-content'),next=JSON.stringify(c);if(current!==next){localStorage.setItem('zj-site-content',next);if(location.hash!=='#admin')location.reload()}}).catch(function(){})}loadPublishedContent();
-</script>
+
+<div id="root"></div>
+<script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

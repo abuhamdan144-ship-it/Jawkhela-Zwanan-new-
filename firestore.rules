@@ -70,6 +70,14 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+
+    // Membership applications: anonymous/authenticated applicants can create and read only their own application; admins manage all.
+    match /membershipApplications/{applicationId} {
+      allow create: if isSignedIn() && request.resource.data.ownerUid == request.auth.uid;
+      allow get: if isSignedIn() && (resource.data.ownerUid == request.auth.uid || isAdmin());
+      allow list: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
     // Members profiles
     match /members/{userId} {
       allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());

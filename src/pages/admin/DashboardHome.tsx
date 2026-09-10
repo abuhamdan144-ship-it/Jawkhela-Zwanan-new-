@@ -1,28 +1,77 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import { Users, LayoutDashboard, Target, Calendar, HeartHandshake, Layers } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function DashboardHome() {
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Overview</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          { label: 'Total Users', value: '1,248', change: '+12%' },
-          { label: 'Active Sessions', value: '42', change: '+5%' },
-          { label: 'Revenue', value: '$12,450', change: '+18%' },
-        ].map((stat, i) => (
-          <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-            <h3 className="text-slate-400 text-sm font-medium">{stat.label}</h3>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-bold">{stat.value}</span>
-              <span className="text-sm font-medium text-emerald-400">{stat.change}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+  const [stats, setStats] = useState({
+    members: 0,
+    programs: 0,
+    projects: 0,
+    events: 0,
+    volunteers: 0
+  });
+  const [loading, setLoading] = useState(true);
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 h-96 flex items-center justify-center">
-        <p className="text-slate-500">Chart Placeholder</p>
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const [mem, prog, proj, ev, vol] = await Promise.all([
+          getDocs(collection(db, 'members')),
+          getDocs(collection(db, 'programs')),
+          getDocs(collection(db, 'projects')),
+          getDocs(collection(db, 'events')),
+          getDocs(collection(db, 'volunteers'))
+        ]);
+        
+        setStats({
+          members: mem.size,
+          programs: prog.size,
+          projects: proj.size,
+          events: ev.size,
+          volunteers: vol.size
+        });
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadStats();
+  }, []);
+
+  const cards = [
+    { label: 'Registered Members', value: stats.members, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10', link: '/admin/bloodbank' },
+    { label: 'Programs', value: stats.programs, icon: Layers, color: 'text-indigo-500', bg: 'bg-indigo-500/10', link: '/admin/programs' },
+    { label: 'Projects', value: stats.projects, icon: Target, color: 'text-emerald-500', bg: 'bg-emerald-500/10', link: '/admin/projects' },
+    { label: 'Events', value: stats.events, icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-500/10', link: '/admin/events' },
+    { label: 'Volunteers', value: stats.volunteers, icon: HeartHandshake, color: 'text-rose-500', bg: 'bg-rose-500/10', link: '/admin/volunteers' },
+  ];
+
+  if (loading) return <div className="text-slate-400 p-8 text-center animate-pulse">Loading dashboard...</div>;
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-slate-50">Welcome to Zwanan Admin</h1>
+        <p className="text-slate-400 mt-2">Here is a quick overview of your community data.</p>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {cards.map((c, i) => (
+          <Link key={i} to={c.link} className="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-colors group">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-slate-400 text-sm font-medium">{c.label}</h3>
+                <div className="mt-2 text-3xl font-bold text-slate-50 group-hover:text-white transition-colors">{c.value}</div>
+              </div>
+              <div className={`w-12 h-12 rounded-full ${c.bg} flex items-center justify-center`}>
+                <c.icon className={`w-6 h-6 ${c.color}`} />
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

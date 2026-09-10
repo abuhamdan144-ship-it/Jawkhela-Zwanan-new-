@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Settings, LogOut, Menu, Bell, Search, User, Activity } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, LogOut, Menu, Bell, Search, User, Activity, Calendar, FolderHeart, BookOpen, Image, HeartHandshake, Mail, Layers, Target, FileText } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { auth, db } from '../lib/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -54,14 +54,14 @@ export function AdminLayout() {
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
     { name: 'Blood Bank / Members', path: '/admin/bloodbank', icon: Activity },
-    { name: 'Programs', path: '/admin/programs', icon: LayoutDashboard },
-    { name: 'Projects', path: '/admin/projects', icon: LayoutDashboard },
-    { name: 'Events', path: '/admin/events', icon: LayoutDashboard },
+    { name: 'Programs', path: '/admin/programs', icon: Layers },
+    { name: 'Projects', path: '/admin/projects', icon: Target },
+    { name: 'Events', path: '/admin/events', icon: Calendar },
     { name: 'Team', path: '/admin/cabinet', icon: Users },
-    { name: 'Stories', path: '/admin/stories', icon: LayoutDashboard },
-    { name: 'Gallery', path: '/admin/gallery', icon: LayoutDashboard },
-    { name: 'Volunteers', path: '/admin/volunteers', icon: Users },
-    { name: 'Newsletters', path: '/admin/newsletters', icon: Users },
+    { name: 'Stories', path: '/admin/stories', icon: FileText },
+    { name: 'Gallery', path: '/admin/gallery', icon: Image },
+    { name: 'Volunteers', path: '/admin/volunteers', icon: HeartHandshake },
+    { name: 'Newsletters', path: '/admin/newsletters', icon: Mail },
     { name: 'Global Settings', path: '/admin/settings', icon: Settings },
   ];
 

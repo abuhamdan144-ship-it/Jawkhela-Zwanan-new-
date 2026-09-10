@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
-import { Plus, Trash2, Save, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../lib/firebase';
+import { Plus, Trash2, Save, RefreshCw, CheckCircle, XCircle, Image as ImageIcon, Upload } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 
 interface Props {
@@ -83,7 +84,7 @@ export function CollectionManager({ collectionName, title, template }: Props) {
       <div className="flex justify-between items-center flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-50">{title}</h1>
-          <p className="text-slate-400 text-sm">Manage items in the {collectionName} collection.</p>
+          <p className="text-slate-400 text-sm">Manage items and upload images in the {collectionName} collection.</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={loadData} variant="outline" size="sm"><RefreshCw className="w-4 h-4 mr-2" /> Reload</Button>
@@ -104,6 +105,7 @@ export function CollectionManager({ collectionName, title, template }: Props) {
             key={item._id || `new-${index}`} 
             item={item} 
             template={template}
+            collectionName={collectionName}
             onSave={handleSave} 
             onDelete={() => item._id ? handleDelete(item._id) : loadData()} 
             onApprove={() => handleStatusChange(item._id, 'approved')}
@@ -117,23 +119,37 @@ export function CollectionManager({ collectionName, title, template }: Props) {
   );
 }
 
-const ItemEditor: React.FC<{ item: any, template: any, onSave: (v: any) => void, onDelete: () => void, onApprove: () => void, onReject: () => void, saving: boolean, isVolunteer: boolean }> = ({ item, template, onSave, onDelete, onApprove, onReject, saving, isVolunteer }) => {
+const ItemEditor: React.FC<{ item: any, template: any, collectionName: string, onSave: (v: any) => void, onDelete: () => void, onApprove: () => void, onReject: () => void, saving: boolean, isVolunteer: boolean }> = ({ item, template, collectionName, onSave, onDelete, onApprove, onReject, saving, isVolunteer }) => {
   const [formData, setFormData] = useState<Record<string, any>>(() => {
     const { _id, ...rest } = item;
-    // ensure template keys exist so they can be edited even if empty
     const initData = { ...template, ...rest };
     return initData;
   });
+  const [uploadingImage, setUploadingImage] = useState<string | null>(null);
 
   const handleChange = (key: string, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleImageUpload = async (key: string, file: File) => {
+    setUploadingImage(key);
+    try {
+      if (file.size > 5 * 1024 * 1024) throw new Error('Image must be under 5MB');
+      const storageRef = ref(storage, `${collectionName}/${Date.now()}_${file.name}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(snapshot.ref);
+      handleChange(key, url);
+    } catch (err: any) {
+      alert('Upload failed: ' + err.message);
+    } finally {
+      setUploadingImage(null);
+    }
   };
 
   const save = () => {
     onSave({ _id: item._id, ...formData });
   };
 
-  // Determine if it needs approval UI
   const showApproval = isVolunteer && item._id && formData.status !== 'approved';
 
   return (
@@ -155,10 +171,55 @@ const ItemEditor: React.FC<{ item: any, template: any, onSave: (v: any) => void,
       
       <div className="space-y-4 flex-grow mb-6">
         {Object.keys(formData).map(key => {
-          if (key === 'status') return null; // handled via badges/actions
+          if (key === 'status') return null;
           
           const val = formData[key];
           const isArray = Array.isArray(val);
+          const isImageField = key.toLowerCase().includes('image') || key.toLowerCase().includes('photo') || key.toLowerCase() === 'img';
+          
+          if (isImageField) {
+             return (
+               <div key={key} className="p-3 bg-slate-950 border border-slate-800 rounded-lg">
+                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">{key} (Image)</label>
+                 {val ? (
+                   <div className="mb-3 relative group">
+                     <img src={val} alt="Preview" className="w-full h-32 object-cover rounded border border-slate-800" />
+                     <button onClick={() => handleChange(key, '')} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                       <Trash2 className="w-4 h-4" />
+                     </button>
+                   </div>
+                 ) : (
+                   <div className="w-full h-32 bg-slate-900 border-2 border-dashed border-slate-700 rounded flex flex-col items-center justify-center text-slate-500 mb-3">
+                     <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
+                     <span className="text-xs">No image uploaded</span>
+                   </div>
+                 )}
+                 <div className="flex gap-2 items-center">
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      id={`file-${item._id}-${key}`}
+                      className="hidden" 
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleImageUpload(key, e.target.files[0]);
+                        }
+                      }}
+                    />
+                    <Button 
+                      onClick={() => document.getElementById(`file-${item._id}-${key}`)?.click()} 
+                      size="sm" 
+                      variant="outline"
+                      className="w-full"
+                      disabled={uploadingImage === key}
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      {uploadingImage === key ? 'Uploading...' : (val ? 'Replace Image' : 'Upload Image')}
+                    </Button>
+                 </div>
+               </div>
+             );
+          }
           
           return (
             <div key={key}>

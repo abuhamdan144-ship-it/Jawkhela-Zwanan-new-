@@ -9,7 +9,7 @@ function renderApp() {
   const rootElement = document.getElementById('root');
   if (!rootElement) return;
 
-  if (window.location.hash.startsWith('#/admin') || window.location.pathname.startsWith('/admin')) {
+  if (window.location.hash.startsWith('#/admin') || window.location.pathname.startsWith('/admin') || window.location.hash.startsWith('#/member') || window.location.pathname.startsWith('/member')) {
     isAdminMounted = true;
     // Hide static content
     document.body.style.backgroundColor = '#020617'; // slate-950
@@ -33,7 +33,7 @@ function renderApp() {
 renderApp();
 
 window.addEventListener('hashchange', () => {
-  if (window.location.hash.startsWith('#/admin') && !isAdminMounted) {
+  if ((window.location.hash.startsWith('#/admin') || window.location.hash.startsWith('#/member')) && !isAdminMounted) {
     window.location.reload();
   }
 });

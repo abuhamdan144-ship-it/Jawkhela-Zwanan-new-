@@ -6,7 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 
 export async function initPublicSite() {
-  if (window.location.hash.startsWith('#/admin') || window.location.pathname.startsWith('/admin')) {
+  if (window.location.hash.startsWith('#/admin') || window.location.pathname.startsWith('/admin') || window.location.hash.startsWith('#/member') || window.location.pathname.startsWith('/member')) {
     return;
   }
 

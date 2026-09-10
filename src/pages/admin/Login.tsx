@@ -15,7 +15,6 @@ export function Login() {
   React.useEffect(() => {
     if (location.state?.error) {
       setError(location.state.error);
-      // Clear the state so it doesn't persist on reload
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
@@ -24,34 +23,49 @@ export function Login() {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     
     try {
-      // Allow username login by appending @zwanan.com if it's not an email
       const loginEmail = email.includes('@') ? email : `${email}@zwanan.com`;
       const userCred = await signInWithEmailAndPassword(auth, loginEmail, password);
-
       
-      // Verify admin role
       const memberDoc = await getDoc(doc(db, 'members', userCred.user.uid));
       
       if (!memberDoc.exists()) {
         await auth.signOut();
-        setError('Access Denied: Your account does not have an approved Administrator role.');
+        setError('Account not found in the community database.');
         setLoading(false);
         return;
       }
 
       const data = memberDoc.data();
-      if (data.role === 'admin' && data.status === 'approved') {
-        navigate('/admin');
+      
+      if (data.status === 'pending') {
+        await auth.signOut();
+        setError('Your membership is currently pending approval by an admin.');
+        setLoading(false);
+        return;
+      }
+      
+      if (data.status === 'rejected') {
+        await auth.signOut();
+        setError('Your membership application was rejected.');
+        setLoading(false);
+        return;
+      }
+      
+      if (data.status === 'approved') {
+        if (data.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/member');
+        }
       } else {
         await auth.signOut();
-        setError('Access Denied: Your account does not have an approved Administrator role.');
+        setError('Invalid account status.');
       }
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Failed to login');
+      setError('Failed to sign in. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -61,24 +75,23 @@ export function Login() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-slate-50">Admin Login</h1>
-          <p className="text-slate-400 mt-2">Sign in to manage the website.</p>
+          <h1 className="text-2xl font-bold text-slate-50">Community Sign In</h1>
+          <p className="text-slate-400 mt-2">Sign in to your member portal or admin dashboard.</p>
         </div>
-
         {error && (
           <div className="bg-red-500/10 border border-red-500/50 text-red-500 text-sm p-3 rounded-lg mb-6">
             {error}
           </div>
         )}
-
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-400 mb-1">Username or Email</label>
+            <label className="block text-sm font-medium text-slate-400 mb-1">Email Address</label>
             <input
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              placeholder="example@mail.com"
               className="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
@@ -89,6 +102,7 @@ export function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              placeholder="••••••••"
               className="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>

@@ -724,6 +724,7 @@ footer{border-top:1px solid var(--line);background:var(--bg2);padding:64px 0 30p
 (function(){
 'use strict';
 /* ================= MOCK DATA ================= */
+var _sd={};try{_sd=JSON.parse(localStorage.getItem('zj-site-content')||'{}')}catch(e){}
 var _s=_sd.settings;
 if(_s){
   if(_s.title) document.title=_s.title;
@@ -731,8 +732,7 @@ if(_s){
     if(_s.heroLead) { var hl = document.querySelector('.hero p.lead'); if(hl) hl.textContent = _s.heroLead; }
     if(_s.aboutText) { var at = document.querySelector('#about .sec-head p'); if(at) at.textContent = _s.aboutText; }
   });
-}
-var _sd={};try{_sd=JSON.parse(localStorage.getItem('zj-site-content')||'{}')}catch(e){}var PROGRAMS=_sd.PROGRAMS&&_sd.PROGRAMS.length?_sd.PROGRAMS:[
+}var PROGRAMS=_sd.PROGRAMS&&_sd.PROGRAMS.length?_sd.PROGRAMS:[
  {t:'Education & Literacy',c:'Learn',d:'Evening classes, exam prep and a girls’ learning circle — 320 learners and counting.',m:'320 learners · Mon–Thu',icon:'book'},
  {t:'Football League',c:'Play',d:'12 village teams, a summer cup and coaching for under-14s on the new ground.',m:'12 teams · Fri & Sat',icon:'ball'},
  {t:'Green Village',c:'Plant',d:'Tree planting, waste collection and kitchen gardens. 5,000 trees is our 2026 goal.',m:'1,900 planted · Sundays',icon:'leaf'},

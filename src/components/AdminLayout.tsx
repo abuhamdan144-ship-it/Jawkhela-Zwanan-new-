@@ -26,7 +26,7 @@ export function AdminLayout() {
           setIsAdmin(true);
         } else {
           await signOut(auth);
-          navigate('/admin/login');
+          navigate('/admin/login', { state: { error: 'Access Denied: Your account does not have an approved Administrator role.' } });
         }
       } catch (err) {
         console.error(err);

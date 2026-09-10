@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { auth, db } from '../../lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -10,6 +10,15 @@ export function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  React.useEffect(() => {
+    if (location.state?.error) {
+      setError(location.state.error);
+      // Clear the state so it doesn't persist on reload
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +37,7 @@ export function Login() {
       
       if (!memberDoc.exists()) {
         await auth.signOut();
-        setError('You are signed in, but you do not have administrator access.');
+        setError('Access Denied: Your account does not have an approved Administrator role.');
         setLoading(false);
         return;
       }
@@ -38,7 +47,7 @@ export function Login() {
         navigate('/admin');
       } else {
         await auth.signOut();
-        setError('You are signed in, but you do not have administrator access.');
+        setError('Access Denied: Your account does not have an approved Administrator role.');
       }
     } catch (err: any) {
       console.error(err);

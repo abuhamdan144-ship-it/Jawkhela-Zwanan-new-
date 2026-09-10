@@ -50,7 +50,17 @@ export async function initPublicSite() {
         let photoURL = '';
         if (photoInput.files && photoInput.files.length > 0) {
           const file = photoInput.files[0];
+          
+          // Validate image
+          if (!file.type.startsWith('image/')) {
+            throw new Error('Please select a valid image file for your profile photo.');
+          }
+          if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            throw new Error('Profile photo must be less than 5MB.');
+          }
+
           const storageRef = ref(storage, `profileImages/${user.uid}_${Date.now()}`);
+
           const snapshot = await uploadBytes(storageRef, file);
           photoURL = await getDownloadURL(snapshot.ref);
         }

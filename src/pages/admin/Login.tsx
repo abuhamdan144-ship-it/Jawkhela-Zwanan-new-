@@ -16,8 +16,12 @@ export function Login() {
     setError('');
     setLoading(true);
 
+    
     try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      // Allow username login by appending @zwanan.com if it's not an email
+      const loginEmail = email.includes('@') ? email : `${email}@zwanan.com`;
+      const userCred = await signInWithEmailAndPassword(auth, loginEmail, password);
+
       
       // Verify admin role
       const memberDoc = await getDoc(doc(db, 'members', userCred.user.uid));
@@ -60,9 +64,9 @@ export function Login() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-400 mb-1">Email</label>
+            <label className="block text-sm font-medium text-slate-400 mb-1">Username or Email</label>
             <input
-              type="email"
+              type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

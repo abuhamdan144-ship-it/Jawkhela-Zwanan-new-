@@ -101,7 +101,7 @@ export function CollectionManager({ collectionName, title, template }: Props) {
   );
 }
 
-function ItemEditor({ item, onSave, onDelete, saving }: { item: any, onSave: (v: any) => void, onDelete: () => void, saving: boolean }) {
+const ItemEditor: React.FC<{ item: any, onSave: (v: any) => void, onDelete: () => void, saving: boolean }> = ({ item, onSave, onDelete, saving }) => {
   const [json, setJson] = useState(() => {
     const { _id, ...rest } = item;
     return JSON.stringify(rest, null, 2);

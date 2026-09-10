@@ -88,7 +88,7 @@ export function CollectionManager({ collectionName, title, template }: Props) {
         </div>
         <div className="flex gap-2">
           <Button onClick={loadData} variant="outline" size="sm"><RefreshCw className="w-4 h-4 mr-2" /> Reload</Button>
-          <Button onClick={handleAddItem} size="sm" className="bg-blue-600 hover:bg-blue-700 text-white border-0"><Plus className="w-4 h-4 mr-2" /> Add Item</Button>
+          <Button onClick={handleAddItem} size="sm" className="bg-[#d4af37] text-[#0b1221] font-bold hover:bg-[#f3d472] border-0"><Plus className="w-4 h-4 mr-2" /> Add Item</Button>
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export function CollectionManager({ collectionName, title, template }: Props) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {items.length === 0 && (
-          <div className="col-span-full text-center p-8 bg-slate-900 border border-slate-800 rounded-xl text-slate-500">
+          <div className="col-span-full text-center p-8 bg-[#1a2a4a] border border-[#263c69] rounded-xl text-slate-500">
             No items found. Click "Add Item" to create one.
           </div>
         )}
@@ -153,9 +153,9 @@ const ItemEditor: React.FC<{ item: any, template: any, collectionName: string, o
   const showApproval = isVolunteer && item._id && formData.status !== 'approved';
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col relative shadow-lg">
+    <div className="bg-[#1a2a4a] border border-[#263c69] rounded-xl p-5 flex flex-col relative shadow-lg">
       {item._id ? (
-         <div className="text-xs text-slate-500 font-mono mb-4 bg-slate-950 p-2 rounded border border-slate-800 flex justify-between items-center">
+         <div className="text-xs text-slate-500 font-mono mb-4 bg-[#0b1221] p-2 rounded border border-[#263c69] flex justify-between items-center">
             <span>ID: {item._id}</span>
             {formData.status && (
               <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold ${formData.status === 'approved' ? 'bg-emerald-500/20 text-emerald-400' : formData.status === 'rejected' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'}`}>
@@ -164,7 +164,7 @@ const ItemEditor: React.FC<{ item: any, template: any, collectionName: string, o
             )}
          </div>
       ) : (
-         <div className="text-xs text-blue-400 font-mono mb-4 bg-blue-500/10 p-2 rounded border border-blue-500/20">
+         <div className="text-xs text-[#f3d472] font-mono mb-4 bg-[#d4af37]/10 p-2 rounded border border-[#d4af37]/20">
             NEW ITEM (Not Saved)
          </div>
       )}
@@ -179,17 +179,17 @@ const ItemEditor: React.FC<{ item: any, template: any, collectionName: string, o
           
           if (isImageField) {
              return (
-               <div key={key} className="p-3 bg-slate-950 border border-slate-800 rounded-lg">
+               <div key={key} className="p-3 bg-[#0b1221] border border-[#263c69] rounded-lg">
                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">{key} (Image)</label>
                  {val ? (
                    <div className="mb-3 relative group">
-                     <img src={val} alt="Preview" className="w-full h-32 object-cover rounded border border-slate-800" />
+                     <img src={val} alt="Preview" className="w-full h-32 object-cover rounded border border-[#263c69]" />
                      <button onClick={() => handleChange(key, '')} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                        <Trash2 className="w-4 h-4" />
                      </button>
                    </div>
                  ) : (
-                   <div className="w-full h-32 bg-slate-900 border-2 border-dashed border-slate-700 rounded flex flex-col items-center justify-center text-slate-500 mb-3">
+                   <div className="w-full h-32 bg-[#1a2a4a] border-2 border-dashed border-[#33508a] rounded flex flex-col items-center justify-center text-slate-500 mb-3">
                      <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
                      <span className="text-xs">No image uploaded</span>
                    </div>
@@ -229,14 +229,14 @@ const ItemEditor: React.FC<{ item: any, template: any, collectionName: string, o
                   type="text"
                   value={val.join(', ')}
                   onChange={(e) => handleChange(key, e.target.value.split(',').map(s => s.trim()))}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full px-3 py-2 bg-[#0b1221] border border-[#263c69] rounded-lg text-slate-200 text-sm focus:outline-none focus:border-[#d4af37] transition-colors"
                   placeholder="Comma separated values"
                 />
               ) : (
                 <textarea
                   value={val === undefined || val === null ? '' : String(val)}
                   onChange={(e) => handleChange(key, e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 text-sm focus:outline-none focus:border-blue-500 transition-colors resize-y min-h-[40px]"
+                  className="w-full px-3 py-2 bg-[#0b1221] border border-[#263c69] rounded-lg text-slate-200 text-sm focus:outline-none focus:border-[#d4af37] transition-colors resize-y min-h-[40px]"
                   rows={String(val).length > 50 ? 3 : 1}
                 />
               )}
@@ -245,7 +245,7 @@ const ItemEditor: React.FC<{ item: any, template: any, collectionName: string, o
         })}
       </div>
 
-      <div className="flex flex-col gap-2 mt-auto pt-4 border-t border-slate-800">
+      <div className="flex flex-col gap-2 mt-auto pt-4 border-t border-[#263c69]">
         {showApproval && (
           <div className="flex gap-2 mb-2">
             <Button onClick={onApprove} size="sm" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white border-0" disabled={saving}>
@@ -260,7 +260,7 @@ const ItemEditor: React.FC<{ item: any, template: any, collectionName: string, o
           <Button onClick={onDelete} variant="destructive" size="sm" className="flex-1" disabled={saving}>
             <Trash2 className="w-4 h-4 mr-2" /> Delete
           </Button>
-          <Button onClick={save} size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white border-0" disabled={saving}>
+          <Button onClick={save} size="sm" className="flex-1 bg-[#d4af37] text-[#0b1221] font-bold hover:bg-[#f3d472] border-0" disabled={saving}>
             <Save className="w-4 h-4 mr-2" /> Save
           </Button>
         </div>

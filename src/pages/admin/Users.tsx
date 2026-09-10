@@ -5,14 +5,14 @@ export function Users() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Users</h1>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <button className="bg-[#d4af37] text-[#0b1221] font-bold hover:bg-[#f3d472] px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           Add User
         </button>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="bg-[#1a2a4a] border border-[#263c69] rounded-xl overflow-hidden">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-950 border-b border-slate-800">
+          <thead className="bg-[#0b1221] border-b border-[#263c69]">
             <tr>
               <th className="px-6 py-4 font-medium text-slate-400">Name</th>
               <th className="px-6 py-4 font-medium text-slate-400">Email</th>
@@ -22,7 +22,7 @@ export function Users() {
           </thead>
           <tbody className="divide-y divide-slate-800">
             {[1, 2, 3, 4, 5].map((i) => (
-              <tr key={i} className="hover:bg-slate-800/50 transition-colors">
+              <tr key={i} className="hover:bg-[#263c69]/50 transition-colors">
                 <td className="px-6 py-4">User {i}</td>
                 <td className="px-6 py-4 text-slate-400">user{i}@example.com</td>
                 <td className="px-6 py-4">Member</td>

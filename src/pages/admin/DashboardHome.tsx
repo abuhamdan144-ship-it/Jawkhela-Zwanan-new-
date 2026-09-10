@@ -42,7 +42,7 @@ export function DashboardHome() {
   }, []);
 
   const cards = [
-    { label: 'Registered Members', value: stats.members, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10', link: '/admin/bloodbank' },
+    { label: 'Registered Members', value: stats.members, icon: Users, color: 'text-[#d4af37]', bg: 'bg-[#d4af37]/10', link: '/admin/bloodbank' },
     { label: 'Programs', value: stats.programs, icon: Layers, color: 'text-indigo-500', bg: 'bg-indigo-500/10', link: '/admin/programs' },
     { label: 'Projects', value: stats.projects, icon: Target, color: 'text-emerald-500', bg: 'bg-emerald-500/10', link: '/admin/projects' },
     { label: 'Events', value: stats.events, icon: Calendar, color: 'text-amber-500', bg: 'bg-amber-500/10', link: '/admin/events' },
@@ -60,7 +60,7 @@ export function DashboardHome() {
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {cards.map((c, i) => (
-          <Link key={i} to={c.link} className="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-colors group">
+          <Link key={i} to={c.link} className="bg-[#1a2a4a] border border-[#263c69] rounded-xl p-6 hover:border-[#33508a] transition-colors group">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-slate-400 text-sm font-medium">{c.label}</h3>

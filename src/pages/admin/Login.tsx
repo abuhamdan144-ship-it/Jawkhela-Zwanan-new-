@@ -72,8 +72,8 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-2xl">
+    <div className="min-h-screen bg-[#0b1221] flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-[#1a2a4a] border border-[#263c69] rounded-xl p-8 shadow-2xl">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-slate-50">Community Sign In</h1>
           <p className="text-slate-400 mt-2">Sign in to your member portal or admin dashboard.</p>
@@ -92,7 +92,7 @@ export function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="example@mail.com"
-              className="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-[#0b1221] border border-[#263c69] rounded-lg text-slate-200 focus:outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]"
             />
           </div>
           <div>
@@ -103,13 +103,13 @@ export function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              className="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-[#0b1221] border border-[#263c69] rounded-lg text-slate-200 focus:outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37]"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-medium py-2 px-4 rounded-lg transition-colors mt-6"
+            className="w-full bg-[#d4af37] text-[#0b1221] font-bold hover:bg-[#f3d472] disabled:opacity-50 text-white font-medium py-2 px-4 rounded-lg transition-colors mt-6"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

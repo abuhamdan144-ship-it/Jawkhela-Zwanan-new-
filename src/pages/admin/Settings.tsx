@@ -60,12 +60,12 @@ export function Settings() {
       {error && <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-4 rounded-lg">{error}</div>}
       {success && <div className="bg-emerald-500/10 border border-emerald-500/50 text-emerald-500 p-4 rounded-lg">Settings saved successfully.</div>}
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+      <div className="bg-[#1a2a4a] border border-[#263c69] rounded-xl p-6 space-y-4">
         <label className="block text-sm font-medium text-slate-300">Settings JSON</label>
         <textarea
           value={json}
           onChange={(e) => setJson(e.target.value)}
-          className="w-full h-96 bg-slate-950 border border-slate-800 rounded-lg p-4 text-slate-300 font-mono text-sm focus:outline-none focus:border-blue-500"
+          className="w-full h-96 bg-[#0b1221] border border-[#263c69] rounded-lg p-4 text-slate-300 font-mono text-sm focus:outline-none focus:border-[#d4af37]"
           spellCheck={false}
         />
         
